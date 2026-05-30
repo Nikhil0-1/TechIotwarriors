@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PROJECTS_DATA } from '@/components/home/ProjectsSection';
 import styles from './ProjectDetailsPage.module.css';
+import { Wrench, Plug, Alert, Code, Copy, Download, Award, Zap } from '@/components/ui/Icons';
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const project = PROJECTS_DATA.find(p => p.id === params.id);
@@ -96,12 +97,18 @@ void loop() {
           <div className={styles.contentCol}>
             {/* Components Required */}
             <div className={`glass-card ${styles.card}`}>
-              <h3>🛠️ Components Required</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Wrench size={20} color="var(--matte-gold)" />
+                <span>Components Required</span>
+              </h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: 16 }}>Collect the following hardware components before wiring:</p>
               <ul className={styles.compList}>
                 {project.components.map((c, i) => (
                   <li key={i} className={styles.compItem}>
-                    <span>🔧 {c}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <Wrench size={14} color="var(--text-muted)" />
+                      <span>{c}</span>
+                    </span>
                     <span className="badge badge-gold">x1 Unit</span>
                   </li>
                 ))}
@@ -110,7 +117,10 @@ void loop() {
 
             {/* Circuit Diagram & Wiring Guide */}
             <div className={`glass-card ${styles.card}`}>
-              <h3>🔌 Connection Wiring Schematic</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Plug size={20} color="var(--matte-gold)" />
+                <span>Connection Wiring Schematic</span>
+              </h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: 20 }}>Follow this pins setup table carefully. Incorrect wiring may damage modules.</p>
               
               {/* Connection Table */}
@@ -147,21 +157,29 @@ void loop() {
                 </table>
               </div>
 
-              <div className={styles.wiringAlert}>
-                <strong>⚠️ Warning:</strong> Always disconnect your USB cable from your laptop before plugging wire jumpers. Check that the ESP32 logic level input does not exceed 3.3V.
+              <div className={styles.wiringAlert} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Alert size={16} color="#EF4444" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <div>
+                  <strong>Warning:</strong> Always disconnect your USB cable from your laptop before plugging wire jumpers. Check that the ESP32 logic level input does not exceed 3.3V.
+                </div>
               </div>
             </div>
 
             {/* Code Tabs & Source Editor */}
             <div className={`glass-card ${styles.card}`}>
               <div className={styles.codeHeader}>
-                <h3>💻 Tested Source Code</h3>
-                <div className={styles.codeButtons}>
-                  <button onClick={handleCopy} className="btn btn-outline-gold btn-sm">
-                    {copied ? 'Copied! ✅' : 'Copy Code 📋'}
+                <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <Code size={20} color="var(--matte-gold)" />
+                  <span>Tested Source Code</span>
+                </h3>
+                <div className={styles.codeButtons} style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={handleCopy} className="btn btn-outline-gold btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Copy size={14} />
+                    <span>{copied ? 'Copied!' : 'Copy Code'}</span>
                   </button>
-                  <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(SAMPLE_CODE)}`} download="sketch.ino" className="btn btn-primary btn-sm">
-                    Download INO ⬇️
+                  <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(SAMPLE_CODE)}`} download="sketch.ino" className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Download size={14} />
+                    <span>Download INO</span>
                   </a>
                 </div>
               </div>
@@ -178,18 +196,24 @@ void loop() {
           <div className={styles.sidebarCol}>
             {/* Simulation Tab */}
             <div className={`glass-card ${styles.card}`}>
-              <h3>💻 Circuit Virtual Simulation</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Code size={20} color="var(--matte-gold)" />
+                <span>Circuit Virtual Simulation</span>
+              </h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 12 }}>
                 Test the circuit logic and view debug codes digitally on our simulator before assembling real boards.
               </p>
               <button className="btn btn-primary btn-sm w-full" style={{ justifyContent: 'center' }}>
-                Launch Tinkercad Model 🚀
+                Launch Tinkercad Model
               </button>
             </div>
 
             {/* Viva Prep */}
             <div className={`glass-card ${styles.card}`}>
-              <h3>🎓 Interview / Viva Questions</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Award size={20} color="var(--matte-gold)" />
+                <span>Interview / Viva Questions</span>
+              </h3>
               <div className={styles.vivaList}>
                 {VIVA_QUESTIONS.map((v, i) => (
                   <div key={i} className={styles.vivaItem}>
@@ -202,7 +226,10 @@ void loop() {
 
             {/* Troubleshooting Guide */}
             <div className={`glass-card ${styles.card} ${styles.troubleCard}`}>
-              <h3>⚡ Troubleshooting & Diagnostics</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Zap size={20} color="var(--matte-gold)" />
+                <span>Troubleshooting &amp; Diagnostics</span>
+              </h3>
               <ul className={styles.troubleList}>
                 <li>
                   <strong>Problem: COM Port not detected</strong>

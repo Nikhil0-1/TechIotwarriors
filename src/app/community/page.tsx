@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import styles from './Community.module.css';
+import { MessageSquare, Eye } from '@/components/ui/Icons';
 
 interface ForumThread {
   title: string;
@@ -102,8 +103,14 @@ export default function CommunityPage() {
                       </div>
                     </div>
                     <div className={styles.threadStats}>
-                      <span>💬 {t.replies} replies</span>
-                      <span>👁️ {t.views} views</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <MessageSquare size={14} color="var(--text-muted)" />
+                        {t.replies} replies
+                      </span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Eye size={14} color="var(--text-muted)" />
+                        {t.views} views
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -114,7 +121,10 @@ export default function CommunityPage() {
           {/* Create Post sidebar */}
           <div className={styles.sidebar}>
             <div className={`glass-card ${styles.postCard}`}>
-              <h3>💬 Create New Topic</h3>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <MessageSquare size={20} color="var(--matte-gold)" />
+                <span>Create New Topic</span>
+              </h3>
               <form onSubmit={handlePost} className={styles.postForm}>
                 <div className="form-group">
                   <label className="form-label">Topic Title:</label>
@@ -144,7 +154,7 @@ export default function CommunityPage() {
                 </div>
 
                 <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-                  Publish Topic 🚀
+                  Publish Topic
                 </button>
               </form>
             </div>

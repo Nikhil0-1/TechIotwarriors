@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './NavBar.module.css';
+import { Zap } from '@/components/ui/Icons';
 
 const NAV_LINKS = [
   { label: 'Home',            href: '/' },
@@ -38,7 +39,9 @@ export function NavBar() {
         <div className={styles.inner}>
           {/* Logo */}
           <Link href="/" className={styles.logo}>
-            <span className={styles.logoIcon}>⚡</span>
+            <span className={styles.logoIcon} style={{ display: 'flex', alignItems: 'center' }}>
+              <Zap size={22} color="var(--matte-gold)" />
+            </span>
             <span className={styles.logoText}>
               Tech <span className={styles.logoGold}>IoT</span> Warriors
             </span>

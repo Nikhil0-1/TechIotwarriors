@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getRegisteredUsers, updateUsersDb } from '@/lib/db';
 import styles from './PaymentPage.module.css';
+import { Shield, Zap, Clock, ArrowRight } from '@/components/ui/Icons';
 
 import { Suspense } from 'react';
 
@@ -123,9 +124,11 @@ function PaymentPageContent() {
                   </svg>
                   <span className={styles.qrLabel}>UPI ID: pay@techiotwarriors</span>
                 </div>
-                <div className={styles.badgeRow}>
-                  <span className="badge badge-gold">🔒 Instant SSL</span>
-                  <span className="badge badge-gold">🇮🇳 UPI Verified</span>
+                <div className={styles.badgeRow} style={{ display: 'flex', gap: '8px' }}>
+                  <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Shield size={12} /> Instant SSL
+                  </span>
+                  <span className="badge badge-gold">UPI Verified</span>
                 </div>
               </div>
 
@@ -192,7 +195,7 @@ function PaymentPageContent() {
                   </div>
 
                   <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-                    Submit Receipt for Verification ⚡
+                    Submit Receipt for Verification
                   </button>
                 </form>
               </div>
@@ -200,7 +203,9 @@ function PaymentPageContent() {
           </>
         ) : (
           <div className={styles.pendingBlock}>
-            <span className={styles.pendingIcon}>⏳</span>
+            <span className={styles.pendingIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Clock size={48} color="var(--matte-gold)" />
+            </span>
             <h2>Verification Pending</h2>
             <p className={styles.pendingText}>
               Your payment screenshot has been uploaded. Super admins are manually checking the receipt matching references.
@@ -210,8 +215,9 @@ function PaymentPageContent() {
               <p>Access will be activated after payment verification. Typically takes 1-2 hours.</p>
             </div>
             <div className="gold-divider" style={{ margin: '20px 0' }} />
-            <button onClick={() => router.push('/login')} className="btn btn-primary w-full" style={{ justifyContent: 'center' }}>
-              Return to Login Portal ➔
+            <button onClick={() => router.push('/login')} className="btn btn-primary w-full" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <span>Return to Login Portal</span>
+              <ArrowRight size={18} />
             </button>
           </div>
         )}

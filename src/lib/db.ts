@@ -32,7 +32,7 @@ export function saveHomepageConfig(config: typeof DEFAULT_HOMEPAGE_TEXT) {
 const KEY_CURRENT_USER = 'iot_current_user';
 const KEY_USERS_DB = 'iot_users_database';
 
-export function getRegisteredUsers() {
+export function getRegisteredUsers(): UserSession[] {
   if (typeof window === 'undefined') return [];
   const users = localStorage.getItem(KEY_USERS_DB);
   if (!users) {

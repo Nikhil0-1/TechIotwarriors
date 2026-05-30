@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import styles from './Footer.module.css';
+import { Zap, Shield, Check } from '../ui/Icons';
 
 const FOOTER_LINKS = {
   Platform: [
@@ -35,8 +36,8 @@ export function Footer() {
         <div className={styles.top}>
           {/* Brand */}
           <div className={styles.brand}>
-            <Link href="/" className={styles.logo}>
-              <span className={styles.logoIcon}>⚡</span>
+            <Link href="/" className={styles.logo} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Zap size={22} color="var(--matte-gold)" />
               <span className={styles.logoText}>Tech <span className={styles.gold}>IoT</span> Warriors</span>
             </Link>
             <p className={styles.tagline}>
@@ -89,9 +90,13 @@ export function Footer() {
             <Link href="/terms"   className={styles.legalLink}>Terms of Service</Link>
             <Link href="/refund"  className={styles.legalLink}>Refund Policy</Link>
           </div>
-          <div className={styles.badges}>
-            <span className="badge badge-gold">🔒 Secure</span>
-            <span className="badge badge-gold">✅ Verified</span>
+          <div className={styles.badges} style={{ display: 'flex', gap: '8px' }}>
+            <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <Shield size={12} /> Secure
+            </span>
+            <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <Check size={12} /> Verified
+            </span>
           </div>
         </div>
       </div>

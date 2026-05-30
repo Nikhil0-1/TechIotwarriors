@@ -101,7 +101,7 @@ export default function CertificatesPage() {
     ctx.fillStyle = '#F8F7F2';
     ctx.font = 'bold 36px "Space Grotesk", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('⚡ TECH IOT WARRIORS', canvas.width / 2, 160);
+    ctx.fillText('TECH IOT WARRIORS', canvas.width / 2, 160);
 
     ctx.fillStyle = '#D4AF37';
     ctx.font = '18px "Inter", sans-serif';
@@ -258,12 +258,12 @@ export default function CertificatesPage() {
 
                 {score !== null && score < 80 && (
                   <div className={styles.errorAlert}>
-                    ⚠️ Score: {score}%. You need at least 80% to pass. Please review answers and try again.
+                    Score: {score}%. You need at least 80% to pass. Please review answers and try again.
                   </div>
                 )}
 
                 <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 24 }} disabled={submittingQuiz}>
-                  {submittingQuiz ? 'Evaluating Test...' : 'Evaluate Quiz & Generate Certificate 🏆'}
+                  {submittingQuiz ? 'Evaluating Test...' : 'Evaluate Quiz & Generate Certificate'}
                 </button>
               </form>
             </div>
@@ -271,15 +271,15 @@ export default function CertificatesPage() {
             <div className={styles.certOutput}>
               <div className={`glass-card ${styles.successBar}`}>
                 <div>
-                  <h3>🎉 Assessment Congratulations!</h3>
+                  <h3>Assessment Congratulations!</h3>
                   <p>You scored {score}%. Your certificate is ready to download.</p>
                 </div>
                 <div className={styles.certButtons}>
                   <button onClick={handleDownload} className="btn btn-primary">
-                    Download Certificate PNG ⬇️
+                    Download Certificate PNG
                   </button>
                   <button onClick={() => setQuizPassed(false)} className="btn btn-secondary">
-                    Retake Quiz 🔁
+                    Retake Quiz
                   </button>
                 </div>
               </div>

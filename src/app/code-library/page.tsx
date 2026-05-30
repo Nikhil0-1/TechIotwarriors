@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import styles from './CodeLibrary.module.css';
+import { Search, Copy, Download, BookOpen, Wrench } from '@/components/ui/Icons';
 
 interface CodeSnippet {
   title: string;
@@ -109,7 +110,7 @@ void setup() {
 void loop() {
   float temp = 24.5;
   if (Firebase.setFloat(fbData, "/sensors/temperature", temp)) {
-    Serial.println("Data Synced to Firebase! ✅");
+    Serial.println("Data Synced to Firebase!");
   } else {
     Serial.println(fbData.errorReason());
   }
@@ -174,7 +175,7 @@ export default function CodeLibraryPage() {
               onChange={e => setSearch(e.target.value)}
               className={`${styles.searchInput} form-input`}
             />
-            <span className={styles.searchIcon}>🔍</span>
+            <span className={styles.searchIcon}><Search size={18} /></span>
           </div>
         </div>
 
@@ -185,12 +186,14 @@ export default function CodeLibraryPage() {
               <div className={styles.cardHeader}>
                 <span className="tag">{s.category}</span>
                 <h3 className={styles.cardTitle}>{s.title}</h3>
-                <div className={styles.actions}>
-                  <button onClick={() => handleCopy(s.code, i)} className="btn btn-outline-gold btn-sm">
-                    {copiedIdx === i ? 'Copied! ✅' : 'Copy 📋'}
+                <div className={styles.actions} style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => handleCopy(s.code, i)} className="btn btn-outline-gold btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Copy size={14} />
+                    <span>{copiedIdx === i ? 'Copied!' : 'Copy'}</span>
                   </button>
-                  <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(s.code)}`} download="code.ino" className="btn btn-primary btn-sm">
-                    Download ⬇️
+                  <a href={`data:text/plain;charset=utf-8,${encodeURIComponent(s.code)}`} download="code.ino" className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Download size={14} />
+                    <span>Download</span>
                   </a>
                 </div>
               </div>
@@ -203,13 +206,19 @@ export default function CodeLibraryPage() {
               {/* Descriptions */}
               <div className={styles.details}>
                 <div className={styles.detailBlock}>
-                  <strong>📖 Code Logic Explanation:</strong>
-                  <p>{s.explanation}</p>
+                  <strong style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--matte-gold)' }}>
+                    <BookOpen size={16} />
+                    <span>Code Logic Explanation:</span>
+                  </strong>
+                  <p style={{ marginTop: '6px' }}>{s.explanation}</p>
                 </div>
                 
-                <div className={styles.detailBlock} style={{ marginTop: 12 }}>
-                  <strong>🔧 Common Compilation Errors &amp; Fixes:</strong>
-                  <p>{s.errorSolution}</p>
+                <div className={styles.detailBlock} style={{ marginTop: 16 }}>
+                  <strong style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--matte-gold)' }}>
+                    <Wrench size={16} />
+                    <span>Common Compilation Errors &amp; Fixes:</span>
+                  </strong>
+                  <p style={{ marginTop: '6px' }}>{s.errorSolution}</p>
                 </div>
               </div>
             </div>

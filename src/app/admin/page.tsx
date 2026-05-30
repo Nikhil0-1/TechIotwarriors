@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, getRegisteredUsers, updateUsersDb, saveHomepageConfig, getHomepageConfig } from '@/lib/db';
 import styles from './Admin.module.css';
+import { Shield, Zap, Lock, Bell } from '@/components/ui/Icons';
 
 export default function AdminDashboard() {
   const [adminUser, setAdminUser] = useState<any>(null);
@@ -142,14 +143,14 @@ export default function AdminDashboard() {
             <p>Role Authorized: <span className="text-gold" style={{ fontWeight: 600 }}>{adminUser.name} ({adminUser.role})</span></p>
           </div>
           <div className={styles.badgeRow}>
-            <span className="badge badge-red">🛡️ Super Admin Access</span>
+            <span className="badge badge-red" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Shield size={12} /> Super Admin Access</span>
           </div>
         </div>
 
         {/* Info Notification Toast */}
         {infoMsg && (
           <div className={styles.infoToast}>
-            <span>⚡ {infoMsg}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Zap size={14} /> {infoMsg}</span>
             <button onClick={() => setInfoMsg('')} className={styles.toastClose}>✕</button>
           </div>
         )}
@@ -158,19 +159,19 @@ export default function AdminDashboard() {
           {/* Menu */}
           <div className={styles.sidebar}>
             <button onClick={() => setActiveTab('analytics')} className={`${styles.sideLink} ${activeTab === 'analytics' ? styles.activeSide : ''}`}>
-              📊 System Analytics
+              System Analytics
             </button>
             <button onClick={() => setActiveTab('payments')} className={`${styles.sideLink} ${activeTab === 'payments' ? styles.activeSide : ''}`}>
-              💳 Payments Screenshot approval ({pendingPayments.length})
+              Payments Screenshot approval ({pendingPayments.length})
             </button>
             <button onClick={() => setActiveTab('users')} className={`${styles.sideLink} ${activeTab === 'users' ? styles.activeSide : ''}`}>
-              👥 Student Management
+              Student Management
             </button>
             <button onClick={() => setActiveTab('announcements')} className={`${styles.sideLink} ${activeTab === 'announcements' ? styles.activeSide : ''}`}>
-              📢 Announcement Systems
+              Announcement Systems
             </button>
             <button onClick={() => setActiveTab('editor')} className={`${styles.sideLink} ${activeTab === 'editor' ? styles.activeSide : ''}`}>
-              ✏️ Homepage Content Editor
+              Homepage Content Editor
             </button>
           </div>
 
@@ -180,7 +181,7 @@ export default function AdminDashboard() {
             {/* Analytics Tab */}
             {activeTab === 'analytics' && (
               <div className={styles.analytics}>
-                <h3>📊 System Analytics overview</h3>
+                <h3>System Analytics overview</h3>
                 <div className={styles.metricsGrid}>
                   <div className={`glass-card ${styles.metricCard}`}>
                     <span>Total Students</span>
@@ -201,7 +202,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className={`glass-card ${styles.innerCard}`} style={{ marginTop: 32 }}>
-                  <h4>🔒 Current Platform Security Parameters</h4>
+                  <h4 style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Lock size={16} /> Current Platform Security Parameters</h4>
                   <ul className={styles.secList}>
                     <li>• Maximum Allowed Devices Per Account: <strong>2 Trusted devices</strong></li>
                     <li>• Active Concurrency Threshold: <strong>1 Active session</strong></li>
@@ -214,7 +215,7 @@ export default function AdminDashboard() {
             {/* Payments Approval Tab */}
             {activeTab === 'payments' && (
               <div className={styles.payments}>
-                <h3>💳 Manual UPI Screenshot Verification</h3>
+                <h3>Manual UPI Screenshot Verification</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
                   Compare the uploaded receipt with the bank transaction records before approving.
                 </p>
@@ -237,10 +238,10 @@ export default function AdminDashboard() {
 
                         <div className={styles.payActions}>
                           <button onClick={() => handleApprovePayment(p.email)} className="btn btn-primary btn-sm w-full" style={{ justifyContent: 'center' }}>
-                            Approve Payment ✓
+                            Approve Payment
                           </button>
                           <button onClick={() => handleRejectPayment(p.email)} className="btn btn-secondary btn-sm w-full" style={{ justifyContent: 'center', marginTop: 8 }}>
-                            Reject Screenshot ✕
+                            Reject Screenshot
                           </button>
                         </div>
                       </div>
@@ -258,7 +259,7 @@ export default function AdminDashboard() {
             {/* Student management list */}
             {activeTab === 'users' && (
               <div className={styles.users}>
-                <h3>👥 Student Management console</h3>
+                <h3>Student Management console</h3>
                 <div className={styles.tableWrapper}>
                   <table className={styles.table}>
                     <thead>
@@ -303,7 +304,7 @@ export default function AdminDashboard() {
             {/* Announcements */}
             {activeTab === 'announcements' && (
               <div className={styles.announcements}>
-                <h3>📢 Broadcast announcements</h3>
+                <h3>Broadcast announcements</h3>
                 <form onSubmit={handlePostAnnouncement} className={styles.form}>
                   <div className="form-group">
                     <label className="form-label">Broadcast Message:</label>
@@ -317,7 +318,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>
-                    Publish Announcement ⚡
+                    Publish Announcement
                   </button>
                 </form>
 
@@ -326,7 +327,10 @@ export default function AdminDashboard() {
                 <h4>Dispatched announcements:</h4>
                 <ul className={styles.annList}>
                   {announcementsList.map((ann, i) => (
-                    <li key={i} className={styles.annItem}>📢 {ann}</li>
+                    <li key={i} className={styles.annItem} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Bell size={14} color="var(--matte-gold)" />
+                      <span>{ann}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -335,7 +339,7 @@ export default function AdminDashboard() {
             {/* Homepage Editor */}
             {activeTab === 'editor' && (
               <div className={styles.editor}>
-                <h3>✏️ Homepage Content Editor</h3>
+                <h3>Homepage Content Editor</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
                   Customize the landing header variables dynamically. Changes sync immediately.
                 </p>
@@ -364,7 +368,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <button type="submit" className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>
-                    Save Homepage updates ⚡
+                    Save Homepage updates
                   </button>
                 </form>
               </div>

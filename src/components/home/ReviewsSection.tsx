@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import styles from './ReviewsSection.module.css';
+import { User, Wrench, Award } from '../ui/Icons';
 
 const REVIEWS = [
   {
@@ -8,30 +9,39 @@ const REVIEWS = [
     role: 'ECE Student, IIT Bombay',
     text: 'The ESP32 Advanced course changed my engineering career. Building the automated security node with Telegram alerts gave me practical hardware skills that textbooks could never explain.',
     rating: 5,
-    avatar: '👨‍💻',
+    avatar: 'user',
   },
   {
     name: 'Priya Sharma',
     role: 'IoT Developer, Bangalore',
     text: 'Highly recommend the IoT kits! Getting matching sensors and step-by-step videos resolved my circuit connection issues instantly. The dual English/Hindi explanations are extremely simple.',
     rating: 5,
-    avatar: '👩‍💻',
+    avatar: 'user',
   },
   {
     name: 'Rohan Gupta',
     role: 'Hobbyist & Maker',
     text: 'I built a whole home automation system for my parents house using the ESP8266 WiFi modules course modules. The troubleshooting guides helped me solve the IP socket drop bugs in hours.',
     rating: 5,
-    avatar: '🛠️',
+    avatar: 'wrench',
   },
   {
     name: 'Sneha Patel',
     role: 'Embedded Software Intern',
     text: 'Passed the Arduino and Electronics module quiz, got my premium certified developer certificate and secured my core embedded hardware internship last week! Unbelievable support!',
     rating: 5,
-    avatar: '🎓',
+    avatar: 'award',
   },
 ];
+
+const ReviewAvatar = ({ type, size = 28 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'wrench': return <Wrench size={size} color="var(--matte-gold)" />;
+    case 'award': return <Award size={size} color="var(--matte-gold)" />;
+    case 'user':
+    default: return <User size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export function ReviewsSection() {
   const [active, setActive] = useState(0);
@@ -58,7 +68,9 @@ export function ReviewsSection() {
             </div>
             <p className={styles.text}>"{REVIEWS[active].text}"</p>
             <div className={styles.user}>
-              <span className={styles.avatar}>{REVIEWS[active].avatar}</span>
+              <span className={styles.avatar}>
+                <ReviewAvatar type={REVIEWS[active].avatar} />
+              </span>
               <div className={styles.userInfo}>
                 <h4 className={styles.userName}>{REVIEWS[active].name}</h4>
                 <p className={styles.userRole}>{REVIEWS[active].role}</p>

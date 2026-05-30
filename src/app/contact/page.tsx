@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import styles from './Contact.module.css';
+import { MapPin, Mail, Phone, Shield } from '@/components/ui/Icons';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -31,10 +32,15 @@ export default function ContactPage() {
           {/* Info Card */}
           <div className={styles.infoCol}>
             <div className={`glass-card ${styles.card}`}>
-              <h2>📍 Contact Information</h2>
+              <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <MapPin size={22} color="var(--matte-gold)" />
+                <span>Contact Information</span>
+              </h2>
               <div className="gold-divider" style={{ margin: '18px 0' }} />
               <div className={styles.infoItem}>
-                <span className={styles.infoIcon}>📧</span>
+                <span className={styles.infoIcon}>
+                  <Mail size={20} color="var(--matte-gold)" />
+                </span>
                 <div>
                   <strong>Direct Email</strong>
                   <p>support@techiotwarriors.com</p>
@@ -42,7 +48,9 @@ export default function ContactPage() {
               </div>
 
               <div className={styles.infoItem} style={{ marginTop: 20 }}>
-                <span className={styles.infoIcon}>📞</span>
+                <span className={styles.infoIcon}>
+                  <Phone size={20} color="var(--matte-gold)" />
+                </span>
                 <div>
                   <strong>Phone / WhatsApp</strong>
                   <p>+91 98765 43210 (10 AM - 6 PM IST)</p>
@@ -50,7 +58,9 @@ export default function ContactPage() {
               </div>
 
               <div className={styles.infoItem} style={{ marginTop: 20 }}>
-                <span className={styles.infoIcon}>🛡️</span>
+                <span className={styles.infoIcon}>
+                  <Shield size={20} color="var(--matte-gold)" />
+                </span>
                 <div>
                   <strong>Security Division</strong>
                   <p>abuse-prevention@techiotwarriors.com</p>
@@ -102,12 +112,12 @@ export default function ContactPage() {
                   </div>
 
                   <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-                    Send Message ⚡
+                    Send Message
                   </button>
                 </form>
               ) : (
                 <div className={styles.successBlock}>
-                  <h3>🎉 Message Sent Successfully!</h3>
+                  <h3>Message Sent Successfully!</h3>
                   <p>Thank you, {name}. Our support team will review your ticket and reply to {email} within 24 hours.</p>
                   <button onClick={() => setSubmitted(false)} className="btn btn-outline-gold btn-sm mt-md">
                     Send another query

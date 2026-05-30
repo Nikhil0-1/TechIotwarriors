@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import styles from './IoTKits.module.css';
+import { Box, Rocket, Zap } from '@/components/ui/Icons';
 
 interface Kit {
   title: string;
@@ -27,7 +28,7 @@ const KITS: Kit[] = [
       'Breadboard, 40x Jumper Wires (M-M, M-F), 10x Resistors'
     ],
     description: 'The complete starter kit containing every discrete sensor and microcontroller to build all beginner weather logging and smart home nodes.',
-    icon: '📦'
+    icon: 'box'
   },
   {
     title: 'ESP32 Cam Smart Vision Advanced Kit',
@@ -43,9 +44,17 @@ const KITS: Kit[] = [
       'Gas Sensor MQ135, Ultrasonic Ranging module'
     ],
     description: 'Gear up for security, computer vision, local facial recognition databases, and dual core MQTT configurations.',
-    icon: '🚀'
+    icon: 'rocket'
   }
 ];
+
+const KitIcon = ({ type, size = 36 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'rocket': return <Rocket size={size} color="var(--matte-gold)" />;
+    case 'box':
+    default: return <Box size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export default function IoTKitsPage() {
   return (
@@ -66,7 +75,9 @@ export default function IoTKitsPage() {
           {KITS.map((kit, i) => (
             <div key={i} className={`glass-card ${styles.card}`}>
               <div className={styles.top}>
-                <span className={styles.icon}>{kit.icon}</span>
+                <span className={styles.icon}>
+                  <KitIcon type={kit.icon} />
+                </span>
                 <div className={styles.titles}>
                   <h3 className={styles.cardTitle}>{kit.title}</h3>
                   <span className={styles.compatibility}>{kit.compatibility}</span>
@@ -77,10 +88,13 @@ export default function IoTKitsPage() {
 
               <div className={styles.body}>
                 <p className={styles.desc}>{kit.description}</p>
-                <h4 className={styles.itemsTitle}>📦 Included in the Box:</h4>
+                <h4 className={styles.itemsTitle} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                  <Box size={18} color="var(--matte-gold)" />
+                  <span>Included in the Box:</span>
+                </h4>
                 <ul className={styles.list}>
                   {kit.items.map((item, idx) => (
-                    <li key={idx} className={styles.listItem}>✓ {item}</li>
+                    <li key={idx} className={styles.listItem}>• {item}</li>
                   ))}
                 </ul>
               </div>
@@ -91,10 +105,10 @@ export default function IoTKitsPage() {
                 <div className={styles.pricing}>
                   <span className={styles.price}>{kit.price}</span>
                   <span className={styles.originalPrice}>{kit.originalPrice}</span>
-                  <span className={styles.shipping}>★ Free Shipping across India</span>
+                  <span className={styles.shipping}>Free Shipping across India</span>
                 </div>
-                <Link href="/payment?kit=ultimate" className="btn btn-primary">
-                  Order Kit Now ⚡
+                <Link href="/payment?kit=ultimate" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  Order Kit Now <Zap size={14} />
                 </Link>
               </div>
             </div>

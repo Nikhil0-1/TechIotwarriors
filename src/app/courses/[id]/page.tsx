@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { FEATURED_COURSES } from '@/components/home/CoursesSection';
 import styles from './CourseDetailsPage.module.css';
+import { Star, Clock, BookOpen, Play, Download, MessageSquare, Box, Zap } from '@/components/ui/Icons';
 
 export default function CourseDetailsPage({ params }: { params: { id: string } }) {
   const course = FEATURED_COURSES.find(c => c.id === params.id);
@@ -71,10 +72,19 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
             <span className="tag">{course.difficulty}</span>
             <h1 className={styles.title}>{course.title}</h1>
             <p className={styles.desc}>{course.desc}</p>
-            <div className={styles.metaRow}>
-              <span>⭐️ {course.rating} Rating</span>
-              <span>⏱️ {course.duration} Total Length</span>
-              <span>📖 {course.lessons} Lectures</span>
+            <div className={styles.metaRow} style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Star size={14} style={{ fill: 'var(--matte-gold)', stroke: 'var(--matte-gold)' }} />
+                {course.rating} Rating
+              </span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={14} />
+                {course.duration} Total Length
+              </span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <BookOpen size={14} />
+                {course.lessons} Lectures
+              </span>
             </div>
           </div>
           <div className={styles.headerRight}>
@@ -83,7 +93,7 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
               <span className={styles.origPrice}>{course.originalPrice}</span>
               <p className={styles.cardNote}>Instant enrollment, life-time access, full IoT kit compatible.</p>
               <Link href={`/payment?course=${course.id}`} className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 16 }}>
-                Buy Course Now ⚡
+                Buy Course Now
               </Link>
             </div>
           </div>
@@ -146,8 +156,12 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                               key={lidx}
                               onClick={() => setSelectedVideo({ title: les.title, url: les.url })}
                               className={`${styles.lessonBtn} ${selectedVideo.title === les.title ? styles.activeLesson : ''}`}
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}
                             >
-                              <span>▶️ {les.title}</span>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <Play size={12} />
+                                {les.title}
+                              </span>
                               <span className={styles.duration}>{les.duration}</span>
                             </button>
                           ))}
@@ -165,26 +179,35 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                   
                   <div className={styles.downloadGrid}>
                     <div className={`glass-card ${styles.resourceCard}`}>
-                      <h4>📖 Detailed Lecture Notes</h4>
-                      <p>Full PDF summarizing electronics basics, Arduino architecture, and pin maps.</p>
-                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12 }}>
-                        Download PDF ⬇️
+                      <h4 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)' }}>
+                        <BookOpen size={18} />
+                        Detailed Lecture Notes
+                      </h4>
+                      <p style={{ marginTop: '8px' }}>Full PDF summarizing electronics basics, Arduino architecture, and pin maps.</p>
+                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <Download size={14} /> Download PDF
                       </a>
                     </div>
 
                     <div className={`glass-card ${styles.resourceCard}`}>
-                      <h4>🔌 Circuit Schematic Layouts</h4>
-                      <p>Fritzing diagrams, wiring schematics, and TinkerCAD virtual design links.</p>
-                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12 }}>
-                        Download ZIP ⬇️
+                      <h4 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)' }}>
+                        <Zap size={18} />
+                        Circuit Schematic Layouts
+                      </h4>
+                      <p style={{ marginTop: '8px' }}>Fritzing diagrams, wiring schematics, and TinkerCAD virtual design links.</p>
+                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <Download size={14} /> Download ZIP
                       </a>
                     </div>
 
                     <div className={`glass-card ${styles.resourceCard}`}>
-                      <h4>💻 Microcontroller C/C++ Code</h4>
-                      <p>Clean commented source codes, header files, libraries, and compilation parameters.</p>
-                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12 }}>
-                        Download Source ZIP ⬇️
+                      <h4 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)' }}>
+                        <Box size={18} />
+                        Microcontroller C/C++ Code
+                      </h4>
+                      <p style={{ marginTop: '8px' }}>Clean commented source codes, header files, libraries, and compilation parameters.</p>
+                      <a href="#" className="btn btn-outline-gold btn-sm" style={{ marginTop: 12, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <Download size={14} /> Download Source ZIP
                       </a>
                     </div>
                   </div>
@@ -202,7 +225,7 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                       <span>Attempts: Unlimited</span>
                     </div>
                     <Link href="/certificates" className="btn btn-primary" style={{ marginTop: 16 }}>
-                      Start Quiz &amp; Get Certified 🏆
+                      Start Quiz &amp; Get Certified
                     </Link>
                   </div>
                 </div>
@@ -213,8 +236,11 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
           {/* Right Support Column */}
           <div className={styles.supportCol}>
             <div className={`glass-card ${styles.supportCard}`}>
-              <h3>🙋‍♂️ Doubt Solving Center</h3>
-              <p>Experiencing compilation compile errors, device connectivity issues or wrong circuit logic?</p>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <MessageSquare size={18} color="var(--matte-gold)" />
+                <span>Doubt Solving Center</span>
+              </h3>
+              <p style={{ marginTop: '6px' }}>Experiencing compilation compile errors, device connectivity issues or wrong circuit logic?</p>
               <div className="gold-divider" style={{ margin: '16px 0' }} />
               <div className={styles.supportInputs}>
                 <textarea
@@ -224,16 +250,19 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                   style={{ resize: 'none' }}
                 />
                 <button className="btn btn-outline-gold btn-sm w-full" style={{ justifyContent: 'center', marginTop: 10 }}>
-                  Submit Query ⚡
+                  Submit Query
                 </button>
               </div>
             </div>
 
             <div className={`glass-card ${styles.kitCard}`}>
-              <h3>📦 Course Hardware Kit</h3>
-              <p>Make sure you have the official Tech IoT Warriors hardware kit containing the Arduino, ESP32, relays, sensors, wires, and modules.</p>
+              <h3 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <Box size={18} color="var(--matte-gold)" />
+                <span>Course Hardware Kit</span>
+              </h3>
+              <p style={{ marginTop: '6px' }}>Make sure you have the official Tech IoT Warriors hardware kit containing the Arduino, ESP32, relays, sensors, wires, and modules.</p>
               <Link href="/iot-kits" className="btn btn-primary btn-sm w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-                Buy Matching Kit 📦
+                Buy Matching Kit
               </Link>
             </div>
           </div>

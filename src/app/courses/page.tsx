@@ -3,6 +3,19 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FEATURED_COURSES } from '@/components/home/CoursesSection';
 import styles from './page.module.css';
+import { Search, Cpu, Zap, Globe, Wifi, Rocket, Wrench, Clock, BookOpen, Star } from '@/components/ui/Icons';
+
+const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'zap': return <Zap size={size} color="var(--matte-gold)" />;
+    case 'globe': return <Globe size={size} color="var(--matte-gold)" />;
+    case 'cpu': return <Cpu size={size} color="var(--matte-gold)" />;
+    case 'wifi': return <Wifi size={size} color="var(--matte-gold)" />;
+    case 'rocket': return <Rocket size={size} color="var(--matte-gold)" />;
+    case 'wrench': return <Wrench size={size} color="var(--matte-gold)" />;
+    default: return <BookOpen size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export default function CoursesPage() {
   const [activeDiff, setActiveDiff] = useState('All');
@@ -53,7 +66,7 @@ export default function CoursesPage() {
               onChange={e => setSearch(e.target.value)}
               className={`${styles.searchInput} form-input`}
             />
-            <span className={styles.searchIcon}>🔍</span>
+            <span className={styles.searchIcon}><Search size={18} /></span>
           </div>
         </div>
 
@@ -63,7 +76,9 @@ export default function CoursesPage() {
             {filtered.map(course => (
               <div key={course.id} className={`glass-card ${styles.card}`}>
                 <div className={styles.thumbArea}>
-                  <span className={styles.thumbIcon}>{course.thumbnail}</span>
+                  <span className={styles.thumbIcon}>
+                    <CourseIcon type={course.thumbnail} />
+                  </span>
                   <span className={`${styles.badge} badge ${course.difficulty === 'Beginner' ? 'badge-green' : course.difficulty === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                     {course.difficulty}
                   </span>
@@ -72,14 +87,23 @@ export default function CoursesPage() {
 
                 <div className={styles.cardContent}>
                   <div className={styles.meta}>
-                    <span>⏱️ {course.duration}</span>
-                    <span>📖 {course.lessons} Lessons</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Clock size={12} />
+                      {course.duration}
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <BookOpen size={12} />
+                      {course.lessons} Lessons
+                    </span>
                   </div>
                   <h3 className={styles.cardTitle}>{course.title}</h3>
                   <p className={styles.cardDesc}>{course.desc}</p>
 
                   <div className={styles.rating}>
-                    <span>⭐️ {course.rating.toFixed(1)}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Star size={14} style={{ fill: 'var(--matte-gold)', stroke: 'var(--matte-gold)' }} />
+                      {course.rating.toFixed(1)}
+                    </span>
                     <div className={styles.tags}>
                       {course.tags.map(t => <span key={t} className="tag">{t}</span>)}
                     </div>
@@ -92,8 +116,8 @@ export default function CoursesPage() {
                       <span className={styles.price}>{course.price}</span>
                       <span className={styles.originalPrice}>{course.originalPrice}</span>
                     </div>
-                    <Link href={`/courses/${course.id}`} className="btn btn-primary btn-sm">
-                      Enroll Now ⚡
+                    <Link href={`/courses/${course.id}`} className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      Enroll Now <Zap size={14} />
                     </Link>
                   </div>
                 </div>

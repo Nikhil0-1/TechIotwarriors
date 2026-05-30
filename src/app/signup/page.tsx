@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getRegisteredUsers, updateUsersDb } from '@/lib/db';
 import styles from './SignupPage.module.css';
+import { Check, ArrowRight } from '@/components/ui/Icons';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -104,28 +105,35 @@ export default function SignupPage() {
               </div>
 
               <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-                Register Account ⚡
+                Register Account
               </button>
             </form>
           </>
         ) : (
           <div className={styles.successBlock}>
-            <span className={styles.successIcon}>🎉</span>
+            <span className={styles.successIcon} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Check size={48} color="var(--matte-gold)" />
+            </span>
             <h2>Registration Successful!</h2>
             <p>
               Your warrior account for <strong>{email}</strong> has been registered. 
               To activate your course access, proceed to our secure UPI QR payment screen.
             </p>
             <div className="gold-divider" style={{ margin: '20px 0' }} />
-            <Link href={`/payment?email=${email}`} className="btn btn-primary w-full" style={{ justifyContent: 'center' }}>
-              Proceed to QR Payment ➔
+            <Link href={`/payment?email=${email}`} className="btn btn-primary w-full" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <span>Proceed to QR Payment</span>
+              <ArrowRight size={18} />
             </Link>
           </div>
         )}
 
         {!success && (
-          <p className={styles.loginLink}>
-            Already a registered warrior? <Link href="/login">Login here ➔</Link>
+          <p className={styles.loginLink} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+            <span>Already a registered warrior?</span>
+            <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span>Login here</span>
+              <ArrowRight size={14} />
+            </Link>
           </p>
         )}
       </div>

@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import styles from './CoursesSection.module.css';
+import { Cpu, Zap, Globe, Wifi, Rocket, Wrench, Clock, BookOpen, Star } from '../ui/Icons';
 
 export interface Course {
   id: string;
@@ -27,7 +28,7 @@ export const FEATURED_COURSES: Course[] = [
     rating: 4.8,
     price: '₹999',
     originalPrice: '₹2,999',
-    thumbnail: '⚡',
+    thumbnail: 'zap',
     tags: ['Basic', 'Electronics'],
   },
   {
@@ -40,7 +41,7 @@ export const FEATURED_COURSES: Course[] = [
     rating: 4.9,
     price: '₹1,499',
     originalPrice: '₹3,999',
-    thumbnail: '🌐',
+    thumbnail: 'globe',
     tags: ['IoT', 'Beginner'],
   },
   {
@@ -53,7 +54,7 @@ export const FEATURED_COURSES: Course[] = [
     rating: 4.9,
     price: '₹1,299',
     originalPrice: '₹3,499',
-    thumbnail: '🤖',
+    thumbnail: 'cpu',
     tags: ['Arduino', 'Coding'],
   },
   {
@@ -66,7 +67,7 @@ export const FEATURED_COURSES: Course[] = [
     rating: 4.7,
     price: '₹1,699',
     originalPrice: '₹4,999',
-    thumbnail: '📶',
+    thumbnail: 'wifi',
     tags: ['ESP8266', 'WiFi'],
   },
   {
@@ -79,7 +80,7 @@ export const FEATURED_COURSES: Course[] = [
     rating: 4.9,
     price: '₹2,499',
     originalPrice: '₹7,999',
-    thumbnail: '🚀',
+    thumbnail: 'rocket',
     tags: ['ESP32', 'Advanced'],
   },
   {
@@ -92,10 +93,22 @@ export const FEATURED_COURSES: Course[] = [
     rating: 5.0,
     price: '₹2,999',
     originalPrice: '₹9,999',
-    thumbnail: '🛠️',
+    thumbnail: 'wrench',
     tags: ['Hardware', 'Projects'],
   },
 ];
+
+const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'zap': return <Zap size={size} color="var(--matte-gold)" />;
+    case 'globe': return <Globe size={size} color="var(--matte-gold)" />;
+    case 'cpu': return <Cpu size={size} color="var(--matte-gold)" />;
+    case 'wifi': return <Wifi size={size} color="var(--matte-gold)" />;
+    case 'rocket': return <Rocket size={size} color="var(--matte-gold)" />;
+    case 'wrench': return <Wrench size={size} color="var(--matte-gold)" />;
+    default: return <BookOpen size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export function CoursesSection() {
   return (
@@ -114,7 +127,9 @@ export function CoursesSection() {
             <div key={course.id} className={`glass-card ${styles.card} reveal reveal-delay-${(idx % 3) + 1}`}>
               {/* Card Thumbnail Area */}
               <div className={styles.thumbArea}>
-                <span className={styles.thumbIcon}>{course.thumbnail}</span>
+                <span className={styles.thumbIcon}>
+                  <CourseIcon type={course.thumbnail} />
+                </span>
                 <span className={`${styles.badge} badge ${course.difficulty === 'Beginner' ? 'badge-green' : course.difficulty === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                   {course.difficulty}
                 </span>
@@ -124,15 +139,24 @@ export function CoursesSection() {
               {/* Card Info */}
               <div className={styles.cardContent}>
                 <div className={styles.meta}>
-                  <span className={styles.metaItem}>⏱️ {course.duration}</span>
-                  <span className={styles.metaItem}>📖 {course.lessons} Lessons</span>
+                  <span className={styles.metaItem}>
+                    <Clock size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    {course.duration}
+                  </span>
+                  <span className={styles.metaItem}>
+                    <BookOpen size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    {course.lessons} Lessons
+                  </span>
                 </div>
                 <h3 className={styles.title}>{course.title}</h3>
                 <p className={styles.desc}>{course.desc}</p>
 
                 {/* Rating */}
                 <div className={styles.rating}>
-                  <span>⭐️ {course.rating.toFixed(1)}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Star size={14} style={{ fill: 'var(--matte-gold)', stroke: 'var(--matte-gold)' }} />
+                    {course.rating.toFixed(1)}
+                  </span>
                   <div className={styles.tags}>
                     {course.tags.map(t => <span key={t} className="tag">{t}</span>)}
                   </div>
@@ -146,8 +170,8 @@ export function CoursesSection() {
                     <span className={styles.price}>{course.price}</span>
                     <span className={styles.originalPrice}>{course.originalPrice}</span>
                   </div>
-                  <Link href={`/courses/${course.id}`} className="btn btn-primary btn-sm">
-                    Enroll Now ⚡
+                  <Link href={`/courses/${course.id}`} className="btn btn-primary btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    Enroll Now <Zap size={14} />
                   </Link>
                 </div>
               </div>
@@ -156,8 +180,8 @@ export function CoursesSection() {
         </div>
 
         <div className="text-center mt-xl">
-          <Link href="/courses" className="btn btn-secondary btn-lg">
-            View All Courses 📚
+          <Link href="/courses" className="btn btn-secondary btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            View All Courses <BookOpen size={18} />
           </Link>
         </div>
       </div>

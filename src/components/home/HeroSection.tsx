@@ -3,13 +3,24 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getHomepageConfig } from '@/lib/db';
 import styles from './HeroSection.module.css';
+import { Rocket, Zap, Wrench, Box, Trophy, Leaf, Award } from '../ui/Icons';
 
 const TRUST_BADGES = [
-  { icon: '🔧', label: 'Real Hardware Projects' },
-  { icon: '🎯', label: 'Practical Learning' },
-  { icon: '🏆', label: 'Premium Certificate' },
-  { icon: '🌱', label: 'Beginner Friendly' },
+  { icon: 'wrench', label: 'Real Hardware Projects' },
+  { icon: 'award', label: 'Practical Learning' },
+  { icon: 'trophy', label: 'Premium Certificate' },
+  { icon: 'leaf', label: 'Beginner Friendly' },
 ];
+
+const TrustIcon = ({ type, size = 16 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'wrench': return <Wrench size={size} color="var(--matte-gold)" />;
+    case 'award': return <Award size={size} color="var(--matte-gold)" />;
+    case 'trophy': return <Trophy size={size} color="var(--matte-gold)" />;
+    case 'leaf': return <Leaf size={size} color="var(--matte-gold)" />;
+    default: return <Award size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -130,9 +141,9 @@ export function HeroSection() {
 
       {/* Content */}
       <div className={`container ${styles.content}`}>
-        <div className={styles.badge}>
-          <span className={styles.badgeDot} />
-          🚀 India's #1 Premium IoT Learning Platform
+        <div className={styles.badge} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <Rocket size={14} color="var(--matte-gold)" />
+          <span>India's #1 Premium IoT Learning Platform</span>
         </div>
 
         <h1 className={styles.heading}>
@@ -151,14 +162,14 @@ export function HeroSection() {
         </p>
 
         <div className={styles.buttons}>
-          <Link href="/courses" className={`btn btn-primary btn-lg ${styles.btnGlow}`}>
-            <span>⚡</span> Start Learning
+          <Link href="/courses" className={`btn btn-primary btn-lg ${styles.btnGlow}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Zap size={18} /> Start Learning
           </Link>
-          <Link href="/projects" className="btn btn-secondary btn-lg">
-            <span>🔧</span> Explore Projects
+          <Link href="/projects" className="btn btn-secondary btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Wrench size={18} /> Explore Projects
           </Link>
-          <Link href="/iot-kits" className={`btn btn-outline-gold btn-lg`}>
-            <span>📦</span> Get IoT Kit
+          <Link href="/iot-kits" className="btn btn-outline-gold btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Box size={18} /> Get IoT Kit
           </Link>
         </div>
 
@@ -166,7 +177,9 @@ export function HeroSection() {
         <div className={styles.trustBadges}>
           {TRUST_BADGES.map(b => (
             <div key={b.label} className={styles.trustBadge}>
-              <span className={styles.trustIcon}>{b.icon}</span>
+              <span className={styles.trustIcon}>
+                <TrustIcon type={b.icon} />
+              </span>
               <span>{b.label}</span>
             </div>
           ))}

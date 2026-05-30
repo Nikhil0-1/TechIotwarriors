@@ -3,6 +3,19 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { PROJECTS_DATA } from '@/components/home/ProjectsSection';
 import styles from './page.module.css';
+import { Search, Home, Sun, Cpu, Lock, Wifi, Globe } from '@/components/ui/Icons';
+
+const ProjectIcon = ({ type, size = 24 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'home': return <Home size={size} color="var(--matte-gold)" />;
+    case 'sun': return <Sun size={size} color="var(--matte-gold)" />;
+    case 'cpu': return <Cpu size={size} color="var(--matte-gold)" />;
+    case 'lock': return <Lock size={size} color="var(--matte-gold)" />;
+    case 'wifi': return <Wifi size={size} color="var(--matte-gold)" />;
+    case 'globe': return <Globe size={size} color="var(--matte-gold)" />;
+    default: return <Cpu size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -53,7 +66,7 @@ export default function ProjectsPage() {
               onChange={e => setSearch(e.target.value)}
               className={`${styles.searchInput} form-input`}
             />
-            <span className={styles.searchIcon}>🔍</span>
+            <span className={styles.searchIcon}><Search size={18} /></span>
           </div>
         </div>
 
@@ -63,7 +76,9 @@ export default function ProjectsPage() {
             {filtered.map(project => (
               <div key={project.id} className={`glass-card ${styles.card}`}>
                 <div className={styles.cardHeader}>
-                  <span className={styles.icon}>{project.icon}</span>
+                  <span className={styles.icon}>
+                    <ProjectIcon type={project.icon} />
+                  </span>
                   <span className={`${styles.badge} badge ${project.complexity === 'Beginner' ? 'badge-green' : project.complexity === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                     {project.complexity}
                   </span>

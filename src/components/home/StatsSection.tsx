@@ -1,13 +1,24 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import styles from './StatsSection.module.css';
+import { Users, Wrench, BookOpen, Trophy } from '../ui/Icons';
 
 const STATS = [
-  { label: 'Total Students', value: 15420, suffix: '+', icon: '👥' },
-  { label: 'Projects Built', value: 450, suffix: '+', icon: '🔧' },
-  { label: 'Courses Offered', value: 24, suffix: '+', icon: '📚' },
-  { label: 'Certificates Issued', value: 8900, suffix: '+', icon: '🏆' },
+  { label: 'Total Students', value: 15420, suffix: '+', icon: 'users' },
+  { label: 'Projects Built', value: 450, suffix: '+', icon: 'wrench' },
+  { label: 'Courses Offered', value: 24, suffix: '+', icon: 'books' },
+  { label: 'Certificates Issued', value: 8900, suffix: '+', icon: 'trophy' },
 ];
+
+const StatIcon = ({ type, size = 32 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'users': return <Users size={size} color="var(--matte-gold)" />;
+    case 'wrench': return <Wrench size={size} color="var(--matte-gold)" />;
+    case 'books': return <BookOpen size={size} color="var(--matte-gold)" />;
+    case 'trophy': return <Trophy size={size} color="var(--matte-gold)" />;
+    default: return <BookOpen size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export function StatsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -34,7 +45,9 @@ export function StatsSection() {
         <div className={`glass-card ${styles.grid}`}>
           {STATS.map((stat, idx) => (
             <div key={idx} className={styles.item}>
-              <div className={styles.icon}>{stat.icon}</div>
+              <div className={styles.icon}>
+                <StatIcon type={stat.icon} />
+              </div>
               <div className={styles.content}>
                 <h3 className={styles.number}>
                   {started ? <CountUp value={stat.value} /> : '0'}

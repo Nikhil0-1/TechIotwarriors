@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getRegisteredUsers, setCurrentUser, updateUsersDb } from '@/lib/db';
 import styles from './LoginPage.module.css';
+import { Alert, Globe, ArrowRight } from '@/components/ui/Icons';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -116,7 +117,9 @@ export default function LoginPage() {
       {sharingDetected && (
         <div className={styles.overlay}>
           <div className={`glass-card ${styles.popup}`}>
-            <span className={styles.popupIcon}>⚠️</span>
+            <span className={styles.popupIcon}>
+              <Alert size={36} color="#EF4444" />
+            </span>
             <h2>Active Session Alert</h2>
             <p className={styles.popupText}>
               Your account is active on another device. Logging in here will automatically terminate the other active session.
@@ -176,7 +179,7 @@ export default function LoginPage() {
             </div>
 
             <button type="submit" className="btn btn-primary w-full" style={{ justifyContent: 'center', marginTop: 12 }}>
-              Secure Login ⚡
+              Secure Login
             </button>
           </form>
         ) : (
@@ -211,20 +214,29 @@ export default function LoginPage() {
             setErrorMsg('Google simulation: Student credential loaded. Click Login.');
           }}
           className={styles.googleBtn}
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
         >
-          <span>🌐</span> Login with Google Workspace
+          <Globe size={18} />
+          <span>Login with Google Workspace</span>
         </button>
 
-        <p className={styles.signupLink}>
-          New to Tech IoT Warriors? <Link href="/signup">Sign Up here ➔</Link>
+        <p className={styles.signupLink} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+          <span>New to Tech IoT Warriors?</span>
+          <Link href="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <span>Sign Up here</span>
+            <ArrowRight size={14} />
+          </Link>
         </p>
 
         {/* Demo helpers */}
         <div className={styles.demoHelpers}>
-          <strong>💡 Developer Demos Login Credentials:</strong>
-          <p>• Super Admin: <code>admin@techiotwarriors.com</code></p>
-          <p>• Active Student: <code>student@techiotwarriors.com</code></p>
-          <p>• Unverified Student: <code>newbie@techiotwarriors.com</code></p>
+          <strong style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Alert size={14} color="var(--matte-gold)" />
+            <span>Developer Demos Login Credentials:</span>
+          </strong>
+          <p style={{ marginTop: '6px' }}>• Super Admin: <code>admin@techiotwarriors.com</code></p>
+          <p style={{ marginTop: '4px' }}>• Active Student: <code>student@techiotwarriors.com</code></p>
+          <p style={{ marginTop: '4px' }}>• Unverified Student: <code>newbie@techiotwarriors.com</code></p>
         </div>
       </div>
     </div>

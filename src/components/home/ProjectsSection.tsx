@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './ProjectsSection.module.css';
+import { Home, Sun, Cpu, Lock, Wifi, Globe, Wrench } from '../ui/Icons';
 
 export interface Project {
   id: string;
@@ -21,7 +22,7 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Control lights and AC relays via customized Blynk dashboard, mobile app, and offline physical switches.',
     complexity: 'Intermediate',
     components: ['ESP32', 'Relay Module', 'Optocouplers', 'Blynk Cloud'],
-    icon: '🏠',
+    icon: 'home',
   },
   {
     id: 'iot-weather-station',
@@ -30,7 +31,7 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Log temperature, humidity, pressure, and UV index onto a ThingSpeak panel with low-power deep sleep mode.',
     complexity: 'Beginner',
     components: ['Arduino Uno', 'ESP8266', 'DHT22 Sensor', 'BMP280 Sensor'],
-    icon: '☀️',
+    icon: 'sun',
   },
   {
     id: 'robot-projects',
@@ -39,7 +40,7 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Steer an omnidirectional robot chassis via WebSocket stream. View low latency live video on dashboard.',
     complexity: 'Advanced',
     components: ['ESP32-CAM', 'L298D Motor Driver', 'Li-Ion Batteries', 'WebSockets'],
-    icon: '🤖',
+    icon: 'cpu',
   },
   {
     id: 'security-system',
@@ -48,7 +49,7 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Verify credentials locally, trigger solonoids, send real-time intruder snapshot notifications to Telegram.',
     complexity: 'Advanced',
     components: ['ESP32 Cam', 'MFRC522 RFID Reader', 'Solenoid Lock', 'Telegram API'],
-    icon: '🔐',
+    icon: 'lock',
   },
   {
     id: 'sensor-projects',
@@ -57,7 +58,7 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Measure MQ135 PPM levels and display live charts on local OLED screen, push alerts when gas limits breach.',
     complexity: 'Beginner',
     components: ['Arduino Nano', 'MQ135 Gas Sensor', '0.96 Inch OLED', 'Buzzer'],
-    icon: '💨',
+    icon: 'wifi',
   },
   {
     id: 'esp32-camera',
@@ -66,9 +67,21 @@ export const PROJECTS_DATA: Project[] = [
     desc: 'Detect car presence using ultrasound grids, log analytics, sync slot availability to Google Firebase database.',
     complexity: 'Intermediate',
     components: ['ESP32', 'Ultrasonic Sensors', 'Firebase DB', 'Infrared Sensors'],
-    icon: '🚗',
+    icon: 'globe',
   },
 ];
+
+const ProjectIcon = ({ type, size = 24 }: { type: string; size?: number }) => {
+  switch (type) {
+    case 'home': return <Home size={size} color="var(--matte-gold)" />;
+    case 'sun': return <Sun size={size} color="var(--matte-gold)" />;
+    case 'cpu': return <Cpu size={size} color="var(--matte-gold)" />;
+    case 'lock': return <Lock size={size} color="var(--matte-gold)" />;
+    case 'wifi': return <Wifi size={size} color="var(--matte-gold)" />;
+    case 'globe': return <Globe size={size} color="var(--matte-gold)" />;
+    default: return <Cpu size={size} color="var(--matte-gold)" />;
+  }
+};
 
 export function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -108,7 +121,9 @@ export function ProjectsSection() {
           {filteredProjects.map((p, idx) => (
             <div key={p.id} className={`glass-card ${styles.card} reveal reveal-delay-${(idx % 3) + 1}`}>
               <div className={styles.top}>
-                <span className={styles.icon}>{p.icon}</span>
+                <span className={styles.icon}>
+                  <ProjectIcon type={p.icon} />
+                </span>
                 <span className={`${styles.badge} badge ${p.complexity === 'Beginner' ? 'badge-green' : p.complexity === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                   {p.complexity}
                 </span>
@@ -138,8 +153,8 @@ export function ProjectsSection() {
         </div>
 
         <div className="text-center mt-xl">
-          <Link href="/projects" className="btn btn-primary btn-lg">
-            Browse All Projects 🛠️
+          <Link href="/projects" className="btn btn-primary btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            Browse All Projects <Wrench size={18} />
           </Link>
         </div>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 import styles from './About.module.css';
+import { Wrench, Award } from '@/components/ui/Icons';
 
 export default function AboutPage() {
   return (
@@ -18,7 +19,10 @@ export default function AboutPage() {
         {/* Content */}
         <div className={styles.content}>
           <div className={`glass-card ${styles.card}`}>
-            <h2>🛠️ The Hardware Education Problem</h2>
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Wrench size={22} color="var(--matte-gold)" />
+              <span>The Hardware Education Problem</span>
+            </h2>
             <p>
               Traditional computer science and electronics courses teach abstract theories, circuit equations, and memorized diagrams. 
               But when students try to compile actual code, wire pullups, or transmit sensor values to a real database, they encounter errors, 
@@ -31,7 +35,10 @@ export default function AboutPage() {
           </div>
 
           <div className={`glass-card ${styles.card}`} style={{ borderLeftColor: 'var(--matte-gold)' }}>
-            <h2>🎯 What We Deliver</h2>
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <Award size={22} color="var(--matte-gold)" />
+              <span>What We Deliver</span>
+            </h2>
             <ul className={styles.list}>
               <li><strong>Pre-Tested Matching IoT Kits:</strong> No more ordering broken sensors or wrong parts. We ship verified hardware matching our curriculum modules.</li>
               <li><strong>Dual Language Instruction (English + Hindi):</strong> Easy, accessible explanations explaining embedded architecture logic.</li>
