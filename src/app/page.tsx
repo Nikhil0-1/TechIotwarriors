@@ -6,7 +6,7 @@ import { CoursesSection } from '@/components/home/CoursesSection';
 import { ProjectsSection } from '@/components/home/ProjectsSection';
 import { ReviewsSection } from '@/components/home/ReviewsSection';
 import { CTASection } from '@/components/home/CTASection';
-import { useScrollReveal } from '../hooks/useScrollReveal';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export default function HomePage() {
   useScrollReveal();

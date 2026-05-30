@@ -1,29 +1,24 @@
 'use client';
+
 import { useEffect } from 'react';
 
 export function useScrollReveal() {
   useEffect(() => {
-    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const elements = document.querySelectorAll('.reveal');
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
+            entry.target.classList.add('active');
           }
         });
       },
-      {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px',
-      }
+      { threshold: 0.1 }
     );
 
-    revealElements.forEach((el) => observer.observe(el));
+    elements.forEach((el) => observer.observe(el));
 
-    return () => {
-      revealElements.forEach((el) => observer.unobserve(el));
-    };
+    return () => observer.disconnect();
   }, []);
 }
-export default useScrollReveal;
