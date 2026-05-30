@@ -4,7 +4,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { getRegisteredUsers, updateUsersDb } from '@/lib/db';
 import styles from './PaymentPage.module.css';
 
-export default function PaymentPage() {
+import { Suspense } from 'react';
+
+function PaymentPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [name, setName] = useState('');
@@ -172,7 +174,6 @@ export default function PaymentPage() {
                       type="text"
                       readOnly
                       value={selectedCourse}
-                      onChange={e => setSelectedCourse(e.target.value)}
                       className="form-input"
                       style={{ background: 'rgba(255,255,255,0.02)', color: 'var(--text-muted)' }}
                     />
@@ -216,5 +217,13 @@ export default function PaymentPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="loading-overlay"><div className="loading-spinner" /></div>}>
+      <PaymentPageContent />
+    </Suspense>
   );
 }

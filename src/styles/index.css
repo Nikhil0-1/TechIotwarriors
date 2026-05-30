@@ -19,6 +19,11 @@
   --text-muted:       #888888;
   --text-secondary:   #CCCCCC;
 
+  /* Premium Russian Blue */
+  --russian-blue:       #0F1E36;
+  --russian-blue-light: #1D3557;
+  --russian-blue-glow:  rgba(29, 53, 87, 0.25);
+
   /* Glassmorphism */
   --glass-bg:         rgba(255, 255, 255, 0.04);
   --glass-bg-hover:   rgba(255, 255, 255, 0.08);
