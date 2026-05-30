@@ -1,0 +1,261 @@
+.container {
+  min-height: 100vh;
+  padding: 40px 0 100px;
+  position: relative;
+  background-color: var(--premium-black);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+  align-items: center;
+}
+
+.title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: var(--luxury-white);
+  margin-top: 12px;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 24px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pricingCard {
+  padding: 32px;
+  background: rgba(26, 26, 26, 0.6) !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  box-shadow: var(--gold-shadow);
+  text-align: center;
+}
+
+.price {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--matte-gold);
+  display: block;
+}
+
+.origPrice {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.cardNote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Workspace layout */
+.workspace {
+  display: grid;
+  grid-template-columns: 3fr 1.2fr;
+  gap: 32px;
+}
+
+.videoCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.videoPlayer {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  background: var(--premium-black);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.videoTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 24px;
+  color: var(--luxury-white);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.tabBtn {
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-normal);
+}
+
+.tabBtn:hover {
+  color: var(--matte-gold);
+}
+
+.activeTab {
+  color: var(--matte-gold);
+  border-bottom-color: var(--matte-gold);
+}
+
+.tabContent {
+  padding: 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(10px);
+}
+
+/* Modules syllabus list */
+.modulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.moduleItem {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.moduleHeader {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--luxury-white);
+  border: none;
+  cursor: pointer;
+}
+
+.moduleHeader:hover {
+  background: rgba(212, 175, 55, 0.05);
+  color: var(--matte-gold);
+}
+
+.lessonsList {
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lessonBtn {
+  width: 100%;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.lessonBtn:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--matte-gold);
+}
+
+.activeLesson {
+  background: rgba(212, 175, 55, 0.08) !important;
+  color: var(--matte-gold) !important;
+  font-weight: 600;
+}
+
+.duration {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Resources tab */
+.resources h3 { margin-bottom: 8px; color: var(--luxury-white); }
+.resources p { color: var(--text-muted); margin-bottom: 24px; font-size: 0.9rem; }
+.downloadGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.resourceCard { padding: 20px; display: flex; flex-direction: column; height: 100%; justify-content: space-between; }
+.resourceCard h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--luxury-white); }
+.resourceCard p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0; }
+
+/* Quiz tab */
+.quiz h3 { margin-bottom: 8px; color: var(--luxury-white); }
+.quiz p { color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem; }
+.quizCard { padding: 24px; max-width: 480px; display: flex; flex-direction: column; }
+.quizStats { display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-muted); }
+
+/* Right support column */
+.supportCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.supportCard, .kitCard {
+  padding: 24px;
+}
+
+.supportCard h3, .kitCard h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.supportCard p, .kitCard p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.supportInputs {
+  margin-top: 14px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .header { grid-template-columns: 1fr; gap: 24px; }
+  .pricingCard { max-width: 400px; margin: 0 auto; }
+  .workspace { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .downloadGrid { grid-template-columns: 1fr; }
+}

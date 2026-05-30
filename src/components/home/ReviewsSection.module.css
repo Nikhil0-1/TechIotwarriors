@@ -1,0 +1,128 @@
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.bgGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 350px;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.slider {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card {
+  width: 100%;
+  padding: 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(11, 11, 11, 0.5) !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  box-shadow: var(--gold-shadow);
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.star {
+  color: var(--matte-gold);
+  font-size: 1.2rem;
+}
+
+.text {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--luxury-white);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+}
+
+.avatar {
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--luxury-white);
+}
+
+.userRole {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.dot:hover {
+  background: rgba(212, 175, 55, 0.4);
+}
+
+.activeDot {
+  background: var(--matte-gold);
+  width: 32px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 10px var(--matte-gold);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .card {
+    padding: 32px 20px;
+  }
+  .text {
+    font-size: 1.05rem;
+  }
+}

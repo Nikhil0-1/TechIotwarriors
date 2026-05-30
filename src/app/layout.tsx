@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import '@/styles/index.css';
 import { NavBar } from '@/components/layout/NavBar';
 import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';

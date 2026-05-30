@@ -1,0 +1,156 @@
+.container {
+  min-height: 100vh;
+  padding: 60px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 300px;
+  background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  max-width: 700px;
+  margin: 0 auto;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.reminderBar {
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+  border-color: rgba(212, 175, 55, 0.25) !important;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.reminderContent h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--luxury-white);
+  margin-bottom: 4px;
+}
+
+.reminderContent p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.card {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.liveCard {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.15);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dateTime {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.cardBody {
+  flex-grow: 1;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--luxury-white);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.instructor {
+  font-size: 0.88rem;
+  color: var(--matte-gold);
+  font-weight: 500;
+}
+
+.cardFooter {
+  display: flex;
+  flex-direction: column;
+}
+
+.replayArea strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.replayPlayer {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .reminderBar {
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}

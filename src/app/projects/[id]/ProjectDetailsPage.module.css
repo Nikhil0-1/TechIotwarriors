@@ -1,0 +1,250 @@
+.container {
+  min-height: 100vh;
+  padding: 40px 0 100px;
+  position: relative;
+  background-color: var(--premium-black);
+}
+
+.backBtn {
+  font-size: 0.9rem;
+  color: var(--matte-gold);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.backBtn:hover {
+  transform: translateX(-4px);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 40px;
+}
+
+.title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: var(--luxury-white);
+  line-height: 1.2;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.complexityBox {
+  padding: 16px 24px;
+  text-align: center;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+.complexityBox span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.complexityBox h3 {
+  font-size: 1.3rem;
+  color: var(--matte-gold);
+  margin-top: 4px;
+}
+
+.videoPlayer {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 40px;
+  box-shadow: var(--card-shadow);
+}
+
+.iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+}
+
+.contentCol, .sidebarCol {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.card {
+  padding: 32px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--luxury-white);
+  margin-bottom: 16px;
+}
+
+.compList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.compItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+
+/* Connection Table Styling */
+.tableWrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.table th, .table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table th {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--matte-gold);
+  font-weight: 600;
+}
+
+.table td {
+  color: var(--text-secondary);
+}
+
+.wiringAlert {
+  padding: 14px 18px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  color: #EF4444;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Code area */
+.codeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.codeButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.editor {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.editor pre {
+  margin: 0;
+}
+
+.editor code {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #a9b7c6;
+  white-space: pre-wrap;
+}
+
+/* Sidebar Viva questions */
+.vivaList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vivaItem strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--matte-gold);
+  margin-bottom: 6px;
+}
+
+.vivaItem p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Troubleshooting Guides */
+.troubleCard {
+  border-color: rgba(212, 175, 55, 0.2) !important;
+}
+
+.troubleList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.troubleList li strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--luxury-white);
+  margin-bottom: 4px;
+}
+
+.troubleList li p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .header { flex-direction: column; gap: 20px; }
+  .mainGrid { grid-template-columns: 1fr; }
+}

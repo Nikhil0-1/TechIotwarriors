@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { getHomepageConfig } from '@/lib/db';
 import styles from './HeroSection.module.css';
 
 const TRUST_BADGES = [
@@ -13,8 +14,17 @@ const TRUST_BADGES = [
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const [headings, setHeadings] = useState({
+    heroHeading: 'Build Real IoT Projects, Not Just Theory',
+    heroSubheading: 'Learn Arduino, ESP32 & ESP8266 through Real Projects, Video Lessons, Circuit Diagrams, Source Code, IoT Kits, Live Classes and Certifications.'
+  });
+
   // Particle background
   useEffect(() => {
+    // Read dynamic page configs
+    const config = getHomepageConfig();
+    setHeadings(config);
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -126,13 +136,18 @@ export function HeroSection() {
         </div>
 
         <h1 className={styles.heading}>
-          Build <span className="text-gradient">Real IoT Projects</span>,<br />
-          Not Just Theory
+          {headings.heroHeading.includes('Real') ? (
+            <>
+              Build <span className="text-gradient">Real IoT Projects</span>,<br />
+              Not Just Theory
+            </>
+          ) : (
+            headings.heroHeading
+          )}
         </h1>
 
         <p className={styles.sub}>
-          Learn Arduino, ESP32 &amp; ESP8266 through Real Projects, Video Lessons,
-          Circuit Diagrams, Source Code, IoT Kits, Live Classes and Certifications.
+          {headings.heroSubheading}
         </p>
 
         <div className={styles.buttons}>
