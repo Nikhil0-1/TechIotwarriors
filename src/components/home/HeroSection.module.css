@@ -1,0 +1,270 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--premium-black);
+  overflow: hidden;
+  padding: 120px 0 80px;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Background Orbs */
+.orb1, .orb2, .orb3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.orb1 {
+  top: -10%;
+  right: 10%;
+  width: 500px;
+  height: 500px;
+  background: var(--matte-gold);
+}
+
+.orb2 {
+  bottom: 10%;
+  left: -5%;
+  width: 600px;
+  height: 600px;
+  background: var(--dark-gray);
+}
+
+.orb3 {
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: rgba(212, 175, 55, 0.4);
+}
+
+/* Circuit grid animation */
+.circuitGrid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px, 40px 40px;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+/* Content Layout */
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--matte-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--matte-gold);
+  box-shadow: 0 0 10px var(--matte-gold);
+  animation: glowPulse 2s infinite;
+}
+
+.heading {
+  font-size: clamp(2.5rem, 6.5vw, 4.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  letter-spacing: -0.03em;
+  max-width: 1000px;
+  animation: fadeInUp 1s ease;
+}
+
+.sub {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+  animation: fadeInUp 1.2s ease;
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 56px;
+  animation: fadeInUp 1.4s ease;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btnGlow {
+  animation: pulse-gold 3s infinite;
+}
+
+/* Trust Badges */
+.trustBadges {
+  display: flex;
+  gap: 24px;
+  animation: fadeInUp 1.6s ease;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.trustBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all var(--transition-normal);
+}
+
+.trustBadge:hover {
+  border-color: var(--glass-border-hover);
+  background: var(--glass-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+}
+
+.trustIcon {
+  font-size: 1.1rem;
+}
+
+/* Floating Devices */
+.floatingDevices {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.device {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: rgba(11, 11, 11, 0.6);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.deviceLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.arduino {
+  top: 25%;
+  left: 8%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.esp32 {
+  bottom: 25%;
+  right: 8%;
+  animation: floatReverse 8s ease-in-out infinite;
+}
+
+.esp8266 {
+  top: 15%;
+  right: 12%;
+  animation: float 7s ease-in-out infinite 1s;
+}
+
+/* Scroll indicator */
+.scrollIndicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.scrollMouse {
+  width: 24px;
+  height: 40px;
+  border: 2px solid var(--text-muted);
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.scrollDot {
+  width: 4px;
+  height: 8px;
+  background: var(--matte-gold);
+  border-radius: 2px;
+  position: absolute;
+  top: 8px;
+  animation: float 2s infinite ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .arduino { left: 4%; top: 20%; }
+  .esp32 { right: 4%; bottom: 15%; }
+  .esp8266 { display: none; }
+}
+
+@media (max-width: 900px) {
+  .floatingDevices { display: none; }
+}

@@ -1,0 +1,166 @@
+'use client';
+import Link from 'next/link';
+import styles from './CoursesSection.module.css';
+
+export interface Course {
+  id: string;
+  title: string;
+  desc: string;
+  duration: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  lessons: number;
+  rating: number;
+  price: string;
+  originalPrice: string;
+  thumbnail: string;
+  tags: string[];
+}
+
+export const FEATURED_COURSES: Course[] = [
+  {
+    id: 'electronics-basics',
+    title: 'Electronics Basics & Circuit Designing',
+    desc: 'Master resistors, transistors, capacitors, diodes, and schematic design using TinkerCAD and EasyEDA.',
+    duration: '10 Hours',
+    difficulty: 'Beginner',
+    lessons: 15,
+    rating: 4.8,
+    price: '₹999',
+    originalPrice: '₹2,999',
+    thumbnail: '⚡',
+    tags: ['Basic', 'Electronics'],
+  },
+  {
+    id: 'beginner-iot-mastery',
+    title: 'Beginner IoT Mastery Bootcamp',
+    desc: 'Kickstart your IoT journey with basic sensors, cloud communication, and standard data logging techniques.',
+    duration: '18 Hours',
+    difficulty: 'Beginner',
+    lessons: 25,
+    rating: 4.9,
+    price: '₹1,499',
+    originalPrice: '₹3,999',
+    thumbnail: '🌐',
+    tags: ['IoT', 'Beginner'],
+  },
+  {
+    id: 'arduino-mastery',
+    title: 'Arduino Programming & Circuit Building',
+    desc: 'Program Arduino Uno/Nano from scratch. Work with displays, relays, serial monitors, and physical buttons.',
+    duration: '15 Hours',
+    difficulty: 'Beginner',
+    lessons: 22,
+    rating: 4.9,
+    price: '₹1,299',
+    originalPrice: '₹3,499',
+    thumbnail: '🤖',
+    tags: ['Arduino', 'Coding'],
+  },
+  {
+    id: 'esp8266-iot',
+    title: 'ESP8266 WiFi & Home Automation IoT',
+    desc: 'Build smart appliances, web controllers, Blynk IoT dashboard, and link switches to custom cloud webservers.',
+    duration: '20 Hours',
+    difficulty: 'Intermediate',
+    lessons: 28,
+    rating: 4.7,
+    price: '₹1,699',
+    originalPrice: '₹4,999',
+    thumbnail: '📶',
+    tags: ['ESP8266', 'WiFi'],
+  },
+  {
+    id: 'esp32-advanced-iot',
+    title: 'ESP32 Advanced IoT with FreeRTOS & HTTP',
+    desc: 'Explore ESP32 dual core, BLE, mesh networks, AWS IoT Core integrations, and custom database webhooks.',
+    duration: '28 Hours',
+    difficulty: 'Advanced',
+    lessons: 35,
+    rating: 4.9,
+    price: '₹2,499',
+    originalPrice: '₹7,999',
+    thumbnail: '🚀',
+    tags: ['ESP32', 'Advanced'],
+  },
+  {
+    id: 'real-iot-projects',
+    title: 'Real-world Smart IoT Industrial Projects',
+    desc: 'Assemble ESP32 Cam surveillance, autonomous robots, smart agricultural nodes, and automated RFID doorlocks.',
+    duration: '32 Hours',
+    difficulty: 'Advanced',
+    lessons: 40,
+    rating: 5.0,
+    price: '₹2,999',
+    originalPrice: '₹9,999',
+    thumbnail: '🛠️',
+    tags: ['Hardware', 'Projects'],
+  },
+];
+
+export function CoursesSection() {
+  return (
+    <section className={`section ${styles.section}`} id="courses">
+      <div className="container">
+        <div className="section-header reveal">
+          <span className="section-badge">Premium Courses</span>
+          <h2 className="section-title">Our Featured <span className="text-gradient">Learning Journeys</span></h2>
+          <p className="section-subtitle">
+            Choose from beginner basics to advanced industrial projects. Learn by assembling actual hardware circuits.
+          </p>
+        </div>
+
+        <div className={styles.grid}>
+          {FEATURED_COURSES.map((course, idx) => (
+            <div key={course.id} className={`glass-card ${styles.card} reveal reveal-delay-${(idx % 3) + 1}`}>
+              {/* Card Thumbnail Area */}
+              <div className={styles.thumbArea}>
+                <span className={styles.thumbIcon}>{course.thumbnail}</span>
+                <span className={`${styles.badge} badge ${course.difficulty === 'Beginner' ? 'badge-green' : course.difficulty === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
+                  {course.difficulty}
+                </span>
+                <div className={styles.thumbGlow} />
+              </div>
+
+              {/* Card Info */}
+              <div className={styles.cardContent}>
+                <div className={styles.meta}>
+                  <span className={styles.metaItem}>⏱️ {course.duration}</span>
+                  <span className={styles.metaItem}>📖 {course.lessons} Lessons</span>
+                </div>
+                <h3 className={styles.title}>{course.title}</h3>
+                <p className={styles.desc}>{course.desc}</p>
+
+                {/* Rating */}
+                <div className={styles.rating}>
+                  <span>⭐️ {course.rating.toFixed(1)}</span>
+                  <div className={styles.tags}>
+                    {course.tags.map(t => <span key={t} className="tag">{t}</span>)}
+                  </div>
+                </div>
+
+                <div className="gold-divider" style={{ margin: '16px 0' }} />
+
+                {/* Price and Action */}
+                <div className={styles.footer}>
+                  <div className={styles.pricing}>
+                    <span className={styles.price}>{course.price}</span>
+                    <span className={styles.originalPrice}>{course.originalPrice}</span>
+                  </div>
+                  <Link href={`/courses/${course.id}`} className="btn btn-primary btn-sm">
+                    Enroll Now ⚡
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-xl">
+          <Link href="/courses" className="btn btn-secondary btn-lg">
+            View All Courses 📚
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
