@@ -8,34 +8,37 @@
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Brand Colors */
-  --luxury-white:     #F8F7F2;
+  --luxury-white:     #FFFFFF;
   --matte-gold:       #D4AF37;
   --gold-light:       #E8C84A;
   --gold-dark:        #B8952A;
-  --premium-black:    #0B0B0B;
-  --dark-gray:        #1A1A1A;
-  --mid-gray:         #2A2A2A;
-  --soft-gray:        #3A3A3A;
-  --text-muted:       #888888;
-  --text-secondary:   #CCCCCC;
+  
+  /* The new Light Theme Colors */
+  --premium-black:    #F8FAFC; /* Russian White acts as main bg */
+  --dark-gray:        #EEF2F7; /* Soft White */
+  --mid-gray:         #E2E8F0;
+  --soft-gray:        #CBD5E1;
+  --text-muted:       #64748B; /* Soft Gray */
+  --text-secondary:   #475569;
+  --luxury-text:      #1E293B; /* Premium Dark Text */
 
-  /* Premium Russian Blue */
+  /* Premium Russian Blue (kept for accents if needed) */
   --russian-blue:       #0F1E36;
   --russian-blue-light: #1D3557;
-  --russian-blue-glow:  rgba(29, 53, 87, 0.25);
+  --russian-blue-glow:  rgba(29, 53, 87, 0.1);
 
-  /* Glassmorphism */
-  --glass-bg:         rgba(255, 255, 255, 0.04);
-  --glass-bg-hover:   rgba(255, 255, 255, 0.08);
-  --glass-border:     rgba(212, 175, 55, 0.15);
-  --glass-border-hover: rgba(212, 175, 55, 0.4);
+  /* Glassmorphism - Light Mode */
+  --glass-bg:         rgba(255, 255, 255, 0.7);
+  --glass-bg-hover:   rgba(255, 255, 255, 0.9);
+  --glass-border:     rgba(212, 175, 55, 0.2);
+  --glass-border-hover: rgba(212, 175, 55, 0.6);
 
   /* Glow Effects */
-  --gold-glow:        rgba(212, 175, 55, 0.35);
-  --gold-glow-strong: rgba(212, 175, 55, 0.6);
-  --gold-shadow:      0 0 40px rgba(212, 175, 55, 0.25);
-  --card-shadow:      0 8px 40px rgba(0, 0, 0, 0.6);
-  --card-shadow-hover:0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212,175,55,0.2);
+  --gold-glow:        rgba(212, 175, 55, 0.18);
+  --gold-glow-strong: rgba(212, 175, 55, 0.35);
+  --gold-shadow:      0 0 40px rgba(212, 175, 55, 0.15);
+  --card-shadow:      0 8px 30px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover:0 20px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(212,175,55,0.15);
 
   /* Spacing */
   --space-xs:  4px;
@@ -83,8 +86,8 @@ html {
 }
 
 body {
-  background-color: var(--premium-black);
-  color: var(--luxury-white);
+  background-color: var(--premium-black); /* Now #F8FAFC */
+  color: var(--luxury-text); /* Now #1E293B */
   font-family: var(--font-sans);
   line-height: 1.6;
   overflow-x: hidden;

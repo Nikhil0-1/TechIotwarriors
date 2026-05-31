@@ -448,3 +448,139 @@ export function setCurrentUser(user: UserSession | null) {
     localStorage.setItem(KEY_CURRENT_USER, JSON.stringify(user));
   }
 }
+
+// ─────────────────────────────────────────────────────────
+// CODE LIBRARY DATABASE
+// ─────────────────────────────────────────────────────────
+export interface CodeSnippet {
+  id?: string;
+  title: string;
+  category: string;
+  explanation: string;
+  errorSolution: string;
+  code: string;
+}
+
+export const DEFAULT_SNIPPETS: CodeSnippet[] = [
+  {
+    id: 'c-1',
+    title: 'Non-Blocking Blink Code using millis()',
+    category: 'LED Blink',
+    explanation: 'Avoids using delay() which pauses execution of the microcontroller CPU. Uses millis() to compare current time elapsed with a previous timestamp, allowing multi-tasking.',
+    errorSolution: 'If LED is constantly on, make sure interval variable has an appropriate millisecond value (e.g., 1000). Check logic condition parameters.',
+    code: `unsigned long prevMillis = 0;\nconst long interval = 1000;\nint ledState = LOW;\n\nvoid setup() {\n  pinMode(2, OUTPUT);\n}\n\nvoid loop() {\n  unsigned long currentMillis = millis();\n  if (currentMillis - prevMillis >= interval) {\n    prevMillis = currentMillis;\n    ledState = (ledState == LOW) ? HIGH : LOW;\n    digitalWrite(2, ledState);\n  }\n}`
+  },
+  {
+    id: 'c-2',
+    title: 'Analog Sensor Reading with Rolling Average Filter',
+    category: 'Sensor Code',
+    explanation: 'Smooths out electric interference in analog values (like gas levels, light levels) by storing last 10 readings and calculating their mathematical mean average.',
+    errorSolution: 'If readings return zero, make sure analog pin designation aligns with MCU hardware (e.g. A0 on Arduino, GPIO 34 on ESP32).',
+    code: `const int numReadings = 10;\nint readings[numReadings];\nint readIndex = 0;\nint total = 0;\nint average = 0;\n\nvoid setup() {\n  Serial.begin(115200);\n  for (int i = 0; i < numReadings; i++) readings[i] = 0;\n}\n\nvoid loop() {\n  total = total - readings[readIndex];\n  readings[readIndex] = analogRead(34); // ESP32 Analog Pin\n  total = total + readings[readIndex];\n  readIndex = (readIndex + 1) % numReadings;\n  average = total / numReadings;\n  Serial.println(average);\n  delay(100);\n}`
+  },
+  {
+    id: 'c-3',
+    title: 'Secure WiFi Auto-Reconnect Setup',
+    category: 'WiFi Connection',
+    explanation: 'Connects to local WiFi. Checks WiFi.status() in loop and auto-triggers reconnect procedures if router socket drops connection.',
+    errorSolution: 'Check SSID characters and password. In multi-band routers, make sure you connect to 2.4GHz band as most MCUs do not support 5GHz.',
+    code: `#include <WiFi.h>\nconst char* ssid = "MyNetwork";\nconst char* pass = "MyPassword123";\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.begin(ssid, pass);\n  while (WiFi.status() != WL_CONNECTED) {\n    delay(500);\n    Serial.print(".");\n  }\n  Serial.println("Connected!");\n}\n\nvoid loop() {\n  if (WiFi.status() != WL_CONNECTED) {\n    Serial.println("Connection Lost! Reconnecting...");\n    WiFi.disconnect();\n    WiFi.reconnect();\n    delay(5000);\n  }\n}`
+  },
+  {
+    id: 'c-4',
+    title: 'Sync Sensor Payload data to Google Firebase',
+    category: 'Firebase',
+    explanation: 'Pushes JSON strings containing humidity and temperature values directly to Firebase Realtime Database using REST API library.',
+    errorSolution: 'Verify Firebase host link URL (must end with firebasedatabase.app) and auth database secret token.',
+    code: `#include <WiFi.h>\n#include <FirebaseESP32.h>\n\nFirebaseData fbData;\nFirebaseConfig config;\nFirebaseAuth auth;\n\nvoid setup() {\n  Serial.begin(115200);\n  config.host = "PROJECT_ID.firebaseio.com";\n  config.signer.tokens.legacy_token = "AUTH_KEY";\n  Firebase.begin(&config, &auth);\n}\n\nvoid loop() {\n  float temp = 24.5;\n  if (Firebase.setFloat(fbData, "/sensors/temperature", temp)) {\n    Serial.println("Data Synced to Firebase!");\n  } else {\n    Serial.println(fbData.errorReason());\n  }\n  delay(5000);\n}`
+  }
+];
+
+export function getCodeSnippets(): CodeSnippet[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('iot_code_snippets');
+  if (!stored) {
+    localStorage.setItem('iot_code_snippets', JSON.stringify(DEFAULT_SNIPPETS));
+    return DEFAULT_SNIPPETS;
+  }
+  return JSON.parse(stored);
+}
+
+export function saveCodeSnippets(snippets: CodeSnippet[]) {
+  localStorage.setItem('iot_code_snippets', JSON.stringify(snippets));
+}
+
+// ─────────────────────────────────────────────────────────
+// CIRCUIT LIBRARY DATABASE
+// ─────────────────────────────────────────────────────────
+export interface Circuit {
+  id?: string;
+  title: string;
+  category: string;
+  pins: string;
+  working: string;
+  description: string;
+  visual: string;
+}
+
+export const DEFAULT_CIRCUITS: Circuit[] = [
+  {
+    id: 'cir-1',
+    title: 'LED Control Circuit with Current Limiting Resistor',
+    category: 'LED',
+    pins: 'LED Anode (+) to GPIO 2 via 220 Ohm Resistor, LED Cathode (-) to GND.',
+    working: 'When the MCU GPIO goes HIGH (3.3V), current flows through the resistor and LED, illuminating it. The resistor prevents current from exceeding the 20mA LED rating.',
+    description: 'The fundamental hello world circuit of hardware. Protects pins from high current burns.',
+    visual: 'LED [Anode] ── [220Ω Resistor] ── GPIO 2 | LED [Cathode] ── GND'
+  },
+  {
+    id: 'cir-2',
+    title: 'Relay Switch Control with Optocoupler Isolation',
+    category: 'Relay',
+    pins: 'IN to GPIO 5, VCC to 5V, GND to GND. AC load wired in series with Normally Open (NO) terminal.',
+    working: 'Triggering GPIO 5 LOW lights up the internal phototransistor inside the optocoupler. This triggers the electromagnet inside the mechanical relay, snapping the metallic contact to NO to close the external circuit.',
+    description: 'Safe switching circuit to control 220V AC household appliances from a low-voltage 3.3V controller.',
+    visual: 'GPIO 5 ── IN [Relay Module] | 220V Phase ── COM [Relay] | NO [Relay] ── AC Bulb'
+  },
+  {
+    id: 'cir-3',
+    title: 'I2C OLED Display Connection Guide',
+    category: 'OLED',
+    pins: 'VCC to 3.3V, GND to GND, SCL to GPIO 22, SDA to GPIO 21.',
+    working: 'Communicates using Inter-Integrated Circuit (I2C) protocol. Serial Data (SDA) carries screen pixels byte payload, and Serial Clock (SCL) synchronizes packets transfer rate at 400kHz.',
+    description: 'Clear, high-contrast monochrome screen connection for logging sensor values locally.',
+    visual: 'SCL ── GPIO 22 | SDA ── GPIO 21 | VCC ── 3.3V | GND ── GND'
+  },
+  {
+    id: 'cir-4',
+    title: 'DHT11 / DHT22 Humidity & Temp Sensor Circuit',
+    category: 'Sensors',
+    pins: 'VCC to 3.3V, Data pin to GPIO 4, GND to GND. Add 10k Ohm pull-up resistor from Data pin to VCC.',
+    working: 'DHT sensor transmits data packets consisting of 40 bits of temperature and humidity information over a single-wire bus. A pullup resistor holds the data bus line state stable.',
+    description: 'Standard circuit for weather loggers. Reliable pullup setup prevents sensor timeouts.',
+    visual: 'Data ── GPIO 4 (with 10kΩ Pull-up to 3.3V VCC) | GND ── GND'
+  },
+  {
+    id: 'cir-5',
+    title: 'SG90 Servo Motor Angle Controller',
+    category: 'Motors',
+    pins: 'PWM Orange Pin to GPIO 18, VCC Red to 5V (external), GND Brown to shared GND.',
+    working: 'Sends a 50Hz PWM signal. Pulses between 1ms to 2ms dictate the servo position from 0 to 180 degrees. External power prevents ESP32 logic drops.',
+    description: 'Precision mechanical positioning driver. Requires shared ground reference configuration.',
+    visual: 'Orange PWM ── GPIO 18 | Red VCC ── 5V External | Shared GND ── GND'
+  }
+];
+
+export function getCircuits(): Circuit[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('iot_circuits');
+  if (!stored) {
+    localStorage.setItem('iot_circuits', JSON.stringify(DEFAULT_CIRCUITS));
+    return DEFAULT_CIRCUITS;
+  }
+  return JSON.parse(stored);
+}
+
+export function saveCircuits(circuits: Circuit[]) {
+  localStorage.setItem('iot_circuits', JSON.stringify(circuits));
+}

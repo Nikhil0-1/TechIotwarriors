@@ -94,8 +94,8 @@ export function HeroSection() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(212,175,55,${0.08 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(212,175,55,${0.35 * (1 - dist / 120)})`; // Increased from 0.08 to 0.35
+            ctx.lineWidth = 1.0; // Increased line width slightly
             ctx.stroke();
           }
         }

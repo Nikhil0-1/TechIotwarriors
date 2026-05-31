@@ -25,7 +25,7 @@
   border-radius: 50%;
   filter: blur(140px);
   pointer-events: none;
-  opacity: 0.15;
+  opacity: 0.25; /* Increased opacity for light background */
   z-index: 1;
 }
 
@@ -42,7 +42,7 @@
   left: -5%;
   width: 600px;
   height: 600px;
-  background: var(--dark-gray);
+  background: var(--gold-light); /* Changed from dark-gray to gold-light */
 }
 
 .orb3 {
@@ -59,9 +59,9 @@
   position: absolute;
   inset: 0;
   background-image: 
-    radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px),
-    linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+    radial-gradient(circle, rgba(212, 175, 55, 0.15) 1px, transparent 1px),
+    linear-gradient(to right, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
   background-size: 40px 40px, 40px 40px, 40px 40px;
   z-index: 1;
   opacity: 0.8;
@@ -185,12 +185,12 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  background: rgba(11, 11, 11, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   padding: 16px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   backdrop-filter: blur(12px);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), 0 0 20px rgba(212, 175, 55, 0.15);
   transition: all 0.3s ease;
 }
 

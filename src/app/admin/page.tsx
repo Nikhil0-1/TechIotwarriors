@@ -12,10 +12,16 @@ import {
   getReviews,
   saveReviews,
   getCertificates,
+  getCodeSnippets,
+  saveCodeSnippets,
+  getCircuits,
+  saveCircuits,
   Course,
   Module,
   Lesson,
-  Review
+  Review,
+  CodeSnippet,
+  Circuit
 } from '@/lib/db';
 import styles from './Admin.module.css';
 import { Shield, Zap, Lock, Bell, Cpu, Globe, Wifi, Rocket, Wrench, Clock, BookOpen, Star, Play, Plus, Trash2, Edit3, ArrowUp, ArrowDown } from '@/components/ui/Icons';
@@ -32,6 +38,10 @@ export default function AdminDashboard() {
   const [coursesList, setCoursesList] = useState<Course[]>([]);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
+
+  // Libraries database
+  const [codeSnippetsList, setCodeSnippetsList] = useState<CodeSnippet[]>([]);
+  const [circuitsList, setCircuitsList] = useState<Circuit[]>([]);
 
   // Module syllabus reorder
   const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);
@@ -75,6 +85,8 @@ export default function AdminDashboard() {
     setReviewsList(getReviews());
     setWebConfig(getWebsiteConfig());
     setCertificatesLog(getCertificates());
+    setCodeSnippetsList(getCodeSnippets());
+    setCircuitsList(getCircuits());
 
     const storedPending = localStorage.getItem('pending_payments') || '[]';
     setPendingPayments(JSON.parse(storedPending));
@@ -88,6 +100,8 @@ export default function AdminDashboard() {
     setCoursesList(getCourses());
     setReviewsList(getReviews());
     setCertificatesLog(getCertificates());
+    setCodeSnippetsList(getCodeSnippets());
+    setCircuitsList(getCircuits());
     const storedPending = localStorage.getItem('pending_payments') || '[]';
     setPendingPayments(JSON.parse(storedPending));
   };
@@ -472,6 +486,12 @@ export default function AdminDashboard() {
             </button>
             <button onClick={() => { setActiveTab('editor'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'editor' ? styles.activeSide : ''}`}>
               <Edit3 size={16} /> <span>Website Content</span>
+            </button>
+            <button onClick={() => { setActiveTab('codelib'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'codelib' ? styles.activeSide : ''}`}>
+              <Cpu size={16} /> <span>Code Library</span>
+            </button>
+            <button onClick={() => { setActiveTab('circuitlib'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'circuitlib' ? styles.activeSide : ''}`}>
+              <Wrench size={16} /> <span>Circuit Library</span>
             </button>
             <button onClick={() => { setActiveTab('payments'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'payments' ? styles.activeSide : ''}`}>
               <Zap size={16} /> <span>UPI Screenshot approvals ({pendingPayments.length})</span>
@@ -1226,6 +1246,52 @@ export default function AdminDashboard() {
                   <p style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>No broadcasts active.</p>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Tab 8: Code Library */}
+          {activeTab === 'codelib' && (
+            <div className={styles.panelSection}>
+              <h2><Cpu size={24} style={{verticalAlign: 'middle', marginRight: 8}} /> Code Library Editor</h2>
+              <p className={styles.secDesc}>Direct JSON editor for Code Snippets. Edit the JSON and click outside (blur) to auto-save. Ensure valid JSON format.</p>
+              <textarea 
+                  className="form-input" 
+                  style={{ fontFamily: 'monospace', height: '600px', width: '100%', whiteSpace: 'pre', overflowWrap: 'normal', overflowX: 'auto' }}
+                  defaultValue={JSON.stringify(codeSnippetsList, null, 2)}
+                  onBlur={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setCodeSnippetsList(parsed);
+                      saveCodeSnippets(parsed);
+                      showNotification('Code Snippets database updated successfully! 🚀');
+                    } catch (err) {
+                      alert('Invalid JSON format. Please fix the syntax errors.');
+                    }
+                  }}
+              />
+            </div>
+          )}
+
+          {/* Tab 9: Circuit Library */}
+          {activeTab === 'circuitlib' && (
+            <div className={styles.panelSection}>
+              <h2><Wrench size={24} style={{verticalAlign: 'middle', marginRight: 8}} /> Circuit Library Editor</h2>
+              <p className={styles.secDesc}>Direct JSON editor for Circuits. Edit the JSON and click outside (blur) to auto-save. Ensure valid JSON format.</p>
+              <textarea 
+                  className="form-input" 
+                  style={{ fontFamily: 'monospace', height: '600px', width: '100%', whiteSpace: 'pre', overflowWrap: 'normal', overflowX: 'auto' }}
+                  defaultValue={JSON.stringify(circuitsList, null, 2)}
+                  onBlur={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setCircuitsList(parsed);
+                      saveCircuits(parsed);
+                      showNotification('Circuits database updated successfully! 🚀');
+                    } catch (err) {
+                      alert('Invalid JSON format. Please fix the syntax errors.');
+                    }
+                  }}
+              />
             </div>
           )}
 
