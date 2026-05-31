@@ -12,33 +12,29 @@
   --matte-gold:       #D4AF37;
   --gold-light:       #E8C84A;
   --gold-dark:        #B8952A;
+  --gold-hover:       #C49A1A; /* Premium Gold Hover */
   
   /* The new Light Theme Colors */
-  --premium-black:    #F8FAFC; /* Russian White acts as main bg */
-  --dark-gray:        #EEF2F7; /* Soft White */
+  --premium-black:    #F5F5F0; /* Main Background: warm Russian white */
+  --dark-gray:        #ECE8DF; /* Section Alternate Background */
   --mid-gray:         #E2E8F0;
   --soft-gray:        #CBD5E1;
-  --text-muted:       #64748B; /* Soft Gray */
+  --text-muted:       #475569; /* Secondary Text */
   --text-secondary:   #475569;
-  --luxury-text:      #1E293B; /* Premium Dark Text */
-
-  /* Premium Russian Blue (kept for accents if needed) */
-  --russian-blue:       #0F1E36;
-  --russian-blue-light: #1D3557;
-  --russian-blue-glow:  rgba(29, 53, 87, 0.1);
+  --luxury-text:      #111827; /* Premium Dark Text */
 
   /* Glassmorphism - Light Mode */
-  --glass-bg:         rgba(255, 255, 255, 0.7);
-  --glass-bg-hover:   rgba(255, 255, 255, 0.9);
-  --glass-border:     rgba(212, 175, 55, 0.2);
-  --glass-border-hover: rgba(212, 175, 55, 0.6);
+  --glass-bg:         rgba(255, 255, 255, 0.85); /* Card Background */
+  --glass-bg-hover:   rgba(255, 255, 255, 0.95);
+  --glass-border:     rgba(212, 175, 55, 0.18); /* Soft Border */
+  --glass-border-hover: rgba(212, 175, 55, 0.4);
 
   /* Glow Effects */
   --gold-glow:        rgba(212, 175, 55, 0.18);
   --gold-glow-strong: rgba(212, 175, 55, 0.35);
   --gold-shadow:      0 0 40px rgba(212, 175, 55, 0.15);
-  --card-shadow:      0 8px 30px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover:0 20px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(212,175,55,0.15);
+  --card-shadow:      0 8px 30px rgba(0, 0, 0, 0.08); /* Soft Shadow */
+  --card-shadow-hover:0 20px 40px rgba(0, 0, 0, 0.12), 0 0 20px rgba(212,175,55,0.15);
 
   /* Spacing */
   --space-xs:  4px;
@@ -214,8 +210,8 @@ button { cursor: pointer; }
 .btn:hover::before { transform: translateX(0); }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--matte-gold), var(--gold-light));
-  color: var(--premium-black);
+  background: linear-gradient(135deg, var(--matte-gold), var(--gold-hover));
+  color: #FFFFFF;
   box-shadow: 0 4px 24px rgba(212,175,55,0.4);
 }
 
@@ -225,15 +221,14 @@ button { cursor: pointer; }
 }
 
 .btn-secondary {
-  background: transparent;
-  color: var(--luxury-white);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--luxury-text);
+  border: 1px solid var(--matte-gold);
 }
 
 .btn-secondary:hover {
-  border-color: var(--matte-gold);
-  color: var(--matte-gold);
-  box-shadow: 0 0 20px rgba(212,175,55,0.2);
+  background: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(212,175,55,0.25);
   transform: translateY(-2px);
 }
 
@@ -243,8 +238,8 @@ button { cursor: pointer; }
   border: 1px solid var(--matte-gold);
 }
 .btn-outline-gold:hover {
-  background: rgba(212,175,55,0.1);
-  box-shadow: 0 0 24px rgba(212,175,55,0.3);
+  background: rgba(212,175,55,0.05);
+  box-shadow: 0 4px 24px rgba(212,175,55,0.2);
   transform: translateY(-2px);
 }
 
@@ -297,18 +292,18 @@ button { cursor: pointer; }
 .form-input {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  color: var(--luxury-white);
+  color: var(--luxury-text);
   font-size: 0.95rem;
   transition: all var(--transition-normal);
 }
 
 .form-input:focus {
   border-color: var(--matte-gold);
+  background: rgba(212, 175, 55, 0.03);
   box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
-  background: rgba(255,255,255,0.07);
 }
 
 .form-input::placeholder { color: var(--text-muted); }

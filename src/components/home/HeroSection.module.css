@@ -86,13 +86,13 @@
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: var(--radius-full);
   font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--matte-gold);
+  font-weight: 700;
+  color: var(--gold-dark);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 24px;
   animation: fadeInUp 0.8s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15); /* Soft premium shadow */
 }
 
 .badgeDot {
@@ -164,7 +164,7 @@
   border-color: var(--glass-border-hover);
   background: var(--glass-bg-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
 }
 
 .trustIcon {
@@ -235,7 +235,7 @@
   letter-spacing: 0.15em;
   color: var(--text-muted);
   z-index: 10;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .scrollMouse {

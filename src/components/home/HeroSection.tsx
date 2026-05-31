@@ -62,8 +62,8 @@ export function HeroSection() {
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.4,
         vy: (Math.random() - 0.5) * 0.4,
-        size: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.6 + 0.1,
+        size: Math.random() * 2 + 1.0, /* slightly larger particles */
+        opacity: Math.random() * 0.5 + 0.4, /* much more visible on white */
         color: colors[Math.floor(Math.random() * colors.length)],
       });
     }
@@ -94,8 +94,8 @@ export function HeroSection() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(212,175,55,${0.35 * (1 - dist / 120)})`; // Increased from 0.08 to 0.35
-            ctx.lineWidth = 1.0; // Increased line width slightly
+            ctx.strokeStyle = `rgba(212,175,55,${0.6 * (1 - dist / 120)})`; // Even stronger lines
+            ctx.lineWidth = 1.0; 
             ctx.stroke();
           }
         }
