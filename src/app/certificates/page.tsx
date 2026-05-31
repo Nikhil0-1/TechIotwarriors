@@ -107,11 +107,11 @@ function CertificatesContent() {
     const PI = Math.PI;
 
     // ─── COLOURS ────────────────────────────────────────────────────────────
-    const GOLD  = '#C9A84C';
-    const ga    = (a: number) => `rgba(201,168,76,${a})`;
+    const GOLD  = '#B2872A'; // Darker, richer gold
+    const ga    = (a: number) => `rgba(178,135,42,${a})`;
     const BLACK = '#111111';
-    const GREY  = '#555555';
-    const LGREY = '#888888';
+    const GREY  = '#444444'; // Darker grey
+    const LGREY = '#666666'; // Darker light-grey
 
     // ═══════════════════════════════════════════════════════════════════════
     // 1. BACKGROUND (white/ivory)
@@ -418,6 +418,7 @@ function CertificatesContent() {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════
     // 19. SIGNATURE BLOCK — bottom right (FIXED — always Nikhil Kumar)
     //     Signature drawn in Alex Brush (cursive/handwritten style)
     // ═══════════════════════════════════════════════════════════════════════
@@ -427,26 +428,26 @@ function CertificatesContent() {
       // ── Handwritten signature in Alex Brush (italic cursive)
       ctx.textAlign = 'center';
       ctx.fillStyle = BLACK;
-      ctx.font = 'italic 60px "Alex Brush", cursive';
-      ctx.fillText('Nikhil Kumar', sigCX, 928);
+      ctx.font = 'italic 62px "Alex Brush", cursive';
+      ctx.fillText('Nikhil Kumar', sigCX, 908); // Moved up significantly to prevent overlap
 
       // ── Signature underline
-      ctx.strokeStyle = ga(0.38); ctx.lineWidth = 1.2;
-      ctx.beginPath(); ctx.moveTo(sigCX - 128, 943); ctx.lineTo(sigCX + 128, 943); ctx.stroke();
+      ctx.strokeStyle = ga(0.5); ctx.lineWidth = 1.5; // Darker and thicker line
+      ctx.beginPath(); ctx.moveTo(sigCX - 128, 938); ctx.lineTo(sigCX + 128, 938); ctx.stroke();
 
       // ── Printed name (bold, below underline)
       ctx.fillStyle = BLACK;
       ctx.font = '700 15px "Montserrat", sans-serif';
-      ctx.fillText('Nikhil Kumar', sigCX, 968);
+      ctx.fillText('Nikhil Kumar', sigCX, 966);
 
       // ── Role
       ctx.fillStyle = LGREY;
-      ctx.font = '400 12.5px "Montserrat", sans-serif';
+      ctx.font = '500 12.5px "Montserrat", sans-serif';
       ctx.fillText('CEO & Founder', sigCX, 988);
 
       // ── Company name (bold)
       ctx.fillStyle = BLACK;
-      ctx.font = '700 13px "Montserrat", sans-serif';
+      ctx.font = '800 13px "Montserrat", sans-serif';
       ctx.fillText('Tech IoT Warriors', sigCX, 1008);
     }
 
