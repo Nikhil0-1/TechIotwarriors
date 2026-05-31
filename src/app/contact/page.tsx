@@ -1,19 +1,30 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Contact.module.css';
 import { MapPin, Mail, Phone, Shield } from '@/components/ui/Icons';
+import { getWebsiteConfig } from '@/lib/db';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [msg, setMsg] = useState('');
+  const [config, setConfig] = useState<any>(null);
+
+  useEffect(() => {
+    setConfig(getWebsiteConfig());
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !msg) return;
     setSubmitted(true);
   };
+
+  const emailText = config ? config.contactEmail : 'support@techiotwarriors.com';
+  const phoneText = config ? config.contactPhone : '+91 98765 43210 (10 AM - 6 PM IST)';
+  const abuseText = config ? config.contactAbuseEmail : 'abuse-prevention@techiotwarriors.com';
+  const addressText = config ? config.contactAddress : 'Noida, UP, India';
 
   return (
     <div className={styles.container}>
@@ -43,7 +54,7 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <strong>Direct Email</strong>
-                  <p>support@techiotwarriors.com</p>
+                  <p>{emailText}</p>
                 </div>
               </div>
 
@@ -53,7 +64,7 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <strong>Phone / WhatsApp</strong>
-                  <p>+91 98765 43210 (10 AM - 6 PM IST)</p>
+                  <p>{phoneText}</p>
                 </div>
               </div>
 
@@ -63,11 +74,22 @@ export default function ContactPage() {
                 </span>
                 <div>
                   <strong>Security Division</strong>
-                  <p>abuse-prevention@techiotwarriors.com</p>
+                  <p>{abuseText}</p>
+                </div>
+              </div>
+
+              <div className={styles.infoItem} style={{ marginTop: 20 }}>
+                <span className={styles.infoIcon}>
+                  <MapPin size={20} color="var(--matte-gold)" />
+                </span>
+                <div>
+                  <strong>Headquarters</strong>
+                  <p>{addressText}</p>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* Form Card */}
           <div className={styles.formCol}>

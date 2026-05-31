@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FEATURED_COURSES } from '@/components/home/CoursesSection';
+import { getCourses, Course } from '@/lib/db';
 import styles from './page.module.css';
 import { Search, Cpu, Zap, Globe, Wifi, Rocket, Wrench, Clock, BookOpen, Star } from '@/components/ui/Icons';
 
@@ -18,18 +18,24 @@ const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
 };
 
 export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [activeDiff, setActiveDiff] = useState('All');
   const [search, setSearch] = useState('');
 
+  useEffect(() => {
+    setCourses(getCourses());
+  }, []);
+
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
-  const filtered = FEATURED_COURSES.filter(c => {
+  const filtered = courses.filter(c => {
     const matchesDiff = activeDiff === 'All' || c.difficulty === activeDiff;
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) ||
                           c.desc.toLowerCase().includes(search.toLowerCase()) ||
                           c.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
     return matchesDiff && matchesSearch;
   });
+
 
   return (
     <div className={styles.container}>

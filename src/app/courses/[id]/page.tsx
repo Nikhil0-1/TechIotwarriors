@@ -1,67 +1,46 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { FEATURED_COURSES } from '@/components/home/CoursesSection';
+import { getCourses } from '@/lib/db';
 import styles from './CourseDetailsPage.module.css';
 import { Star, Clock, BookOpen, Play, Download, MessageSquare, Box, Zap } from '@/components/ui/Icons';
 
 export default function CourseDetailsPage({ params }: { params: { id: string } }) {
-  const course = FEATURED_COURSES.find(c => c.id === params.id);
+  const [course, setCourse] = useState<any>(null);
+  const [modules, setModules] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('lessons');
+  const [expandedModule, setExpandedModule] = useState<number | null>(0);
+  const [selectedVideo, setSelectedVideo] = useState({
+    title: 'Welcome Video',
+    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  });
+
+  useEffect(() => {
+    const list = getCourses();
+    const found = list.find(c => c.id === params.id);
+    if (found) {
+      setCourse(found);
+      setModules(found.modules || []);
+      if (found.modules && found.modules.length > 0 && found.modules[0].lessons.length > 0) {
+        setSelectedVideo({
+          title: found.modules[0].lessons[0].title,
+          url: found.modules[0].lessons[0].url
+        });
+      }
+    }
+    setLoading(false);
+  }, [params.id]);
+
+  if (loading) {
+    return <div className="loading-overlay"><div className="loading-spinner" /></div>;
+  }
+
   if (!course) {
     notFound();
   }
 
-  const [activeTab, setActiveTab] = useState('lessons');
-  const [expandedModule, setExpandedModule] = useState<number | null>(0);
-  const [selectedVideo, setSelectedVideo] = useState({
-    title: 'Lesson 1.1: Welcome & Course Roadmap',
-    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Placeholder Embed
-  });
-
-  // Mandatory modules
-  const MODULES = [
-    {
-      title: 'Module 1: Electronics Basics & Tinkering',
-      lessons: [
-        { title: 'Lesson 1.1: Welcome & Course Roadmap', duration: '12m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 1.2: Volts, Amps, Resistance & Multimeters', duration: '25m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 1.3: Working with Resistors & LEDs', duration: '18m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-      ]
-    },
-    {
-      title: 'Module 2: Arduino Microcontroller Core Programming',
-      lessons: [
-        { title: 'Lesson 2.1: Arduino IDE Installation & Setup', duration: '15m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 2.2: Writing Your First C/C++ Sketch (Blink)', duration: '22m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 2.3: Analog vs Digital Pins', duration: '30m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-      ]
-    },
-    {
-      title: 'Module 3: ESP8266 WiFi & Smart Home Server Node',
-      lessons: [
-        { title: 'Lesson 3.1: Understanding ESP8266 WiFi Modes', duration: '20m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 3.2: Hosting a Local Web Server to Control Relays', duration: '35m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 3.3: Connecting to Blynk Cloud Panel', duration: '28m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-      ]
-    },
-    {
-      title: 'Module 4: ESP32 Advanced IoT, Deep Sleep & FreeRTOS',
-      lessons: [
-        { title: 'Lesson 4.1: ESP32 Dual Core Architecture & Tasks', duration: '32m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 4.2: Deep Sleep Mode & RTC RAM Logging', duration: '25m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 4.3: FreeRTOS Task Management & Queues', duration: '40m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-      ]
-    },
-    {
-      title: 'Module 5: Real IoT Practical Capstone Projects',
-      lessons: [
-        { title: 'Lesson 5.1: Build ESP32 CCTV Camera Server', duration: '45m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 5.2: Sync Sensor Logs to Google Firebase Realtime DB', duration: '50m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        { title: 'Lesson 5.3: Certificate Quiz Preparation & Graduation', duration: '15m', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-      ]
-    }
-  ];
 
   return (
     <div className={styles.container}>
@@ -140,7 +119,7 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
             <div className={styles.tabContent}>
               {activeTab === 'lessons' && (
                 <div className={styles.modulesList}>
-                  {MODULES.map((mod, idx) => (
+                  {modules.map((mod, idx) => (
                     <div key={idx} className={styles.moduleItem}>
                       <button
                         onClick={() => setExpandedModule(expandedModule === idx ? null : idx)}

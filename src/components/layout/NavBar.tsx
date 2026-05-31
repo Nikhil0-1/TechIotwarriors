@@ -1,9 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './NavBar.module.css';
 import { Zap } from '@/components/ui/Icons';
+import { getCurrentUser, setCurrentUser, getRegisteredUsers, updateUsersDb } from '@/lib/db';
 
 const NAV_LINKS = [
   { label: 'Home',            href: '/' },
@@ -23,7 +24,10 @@ export function NavBar() {
   const [scrolled, setScrolled]   = useState(false);
   const [menuOpen, setMenuOpen]   = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [currentUser, setCurrentUserLocal] = useState<any>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -31,7 +35,40 @@ export function NavBar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => { setMenuOpen(false); }, [pathname]);
+  useEffect(() => {
+    setCurrentUserLocal(getCurrentUser());
+    setDropdownOpen(false);
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Click outside to close profile dropdown
+  useEffect(() => {
+    const clickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', clickOutside);
+    return () => document.removeEventListener('mousedown', clickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    const current = getCurrentUser();
+    if (current) {
+      const users = getRegisteredUsers();
+      const updatedUsers = users.map(u => {
+        if (u.email === current.email) {
+          return { ...u, isActive: false, currentSessionId: '' };
+        }
+        return u;
+      });
+      updateUsersDb(updatedUsers);
+    }
+    setCurrentUser(null);
+    setCurrentUserLocal(null);
+    setDropdownOpen(false);
+    window.location.href = '/login';
+  };
 
   return (
     <>
@@ -77,13 +114,88 @@ export function NavBar() {
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
             </button>
-            <button className={styles.iconBtn} aria-label="Profile">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </button>
-            <Link href="/login" className="btn btn-secondary btn-sm" style={{padding:'9px 20px'}}>Login</Link>
-            <Link href="/signup" className="btn btn-primary btn-sm" style={{padding:'9px 20px'}}>Sign Up</Link>
+
+            {/* Profile Dropdown Trigger */}
+            <div className={styles.profileWrapper} ref={dropdownRef}>
+              <button
+                className={`${styles.iconBtn} ${styles.profileBtn} ${dropdownOpen ? styles.iconActive : ''}`}
+                onClick={() => setDropdownOpen(p => !p)}
+                aria-label="Profile Menu"
+              >
+                {currentUser ? (
+                  <span className={styles.avatarChar}>{currentUser.name.charAt(0)}</span>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* Premium Dropdown Drop */}
+              {dropdownOpen && (
+                <div className={`glass-card ${styles.dropdown}`}>
+                  {currentUser ? (
+                    <>
+                      <div className={styles.dropdownHeader}>
+                        <div className={styles.dropdownAvatar}>{currentUser.name.charAt(0)}</div>
+                        <div className={styles.dropdownMeta}>
+                          <span className={styles.dropdownName}>{currentUser.name}</span>
+                          <span className={styles.dropdownEmail}>{currentUser.email}</span>
+                          <span className={styles.dropdownRole}>{currentUser.role}</span>
+                        </div>
+                      </div>
+                      <div className={styles.divider} />
+                      <ul className={styles.dropdownLinks}>
+                        <li>
+                          <Link href="/dashboard?tab=profile">My Profile</Link>
+                        </li>
+                        <li>
+                          {currentUser.role === 'Super Admin' || currentUser.role === 'Instructor' ? (
+                            <Link href="/admin">Control Room</Link>
+                          ) : (
+                            <Link href="/dashboard?tab=overview">Dashboard</Link>
+                          )}
+                        </li>
+                        <li>
+                          <Link href="/courses">My Courses</Link>
+                        </li>
+                        <li>
+                          <Link href="/certificates">Certificates</Link>
+                        </li>
+                        <li>
+                          <Link href="/dashboard?tab=downloads">Downloads</Link>
+                        </li>
+                        <li>
+                          <Link href="/dashboard?tab=profile">Settings</Link>
+                        </li>
+                        <li>
+                          <Link href="/dashboard?tab=profile&focus=password">Change Password</Link>
+                        </li>
+                      </ul>
+                      <div className={styles.divider} />
+                      <button onClick={handleLogout} className={styles.logoutBtn}>
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className={styles.dropdownHeader}>
+                        <div className={styles.dropdownAvatar}>G</div>
+                        <div className={styles.dropdownMeta}>
+                          <span className={styles.dropdownName}>Welcome Guest</span>
+                          <span className={styles.dropdownEmail}>Access your courses</span>
+                        </div>
+                      </div>
+                      <div className={styles.divider} />
+                      <ul className={styles.dropdownLinks}>
+                        <li><Link href="/login">Login</Link></li>
+                        <li><Link href="/signup">Sign Up</Link></li>
+                      </ul>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Hamburger */}
@@ -108,8 +220,26 @@ export function NavBar() {
             ))}
           </ul>
           <div className={styles.mobileActions}>
-            <Link href="/login"  className="btn btn-secondary w-full" style={{justifyContent:'center'}}>Login</Link>
-            <Link href="/signup" className="btn btn-primary  w-full" style={{marginTop:12,justifyContent:'center'}}>Sign Up</Link>
+            {currentUser ? (
+              <div className={styles.mobileProfileRow}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                  <div className={styles.dropdownAvatar}>{currentUser.name.charAt(0)}</div>
+                  <div>
+                    <h4 style={{ color: 'var(--luxury-white)', fontSize: '0.95rem' }}>{currentUser.name}</h4>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{currentUser.email}</p>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <Link href="/dashboard?tab=overview" className="btn btn-secondary btn-sm" style={{ justifyContent: 'center' }}>Dashboard</Link>
+                  <button onClick={handleLogout} className="btn btn-outline-gold btn-sm" style={{ justifyContent: 'center' }}>Logout</button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <Link href="/login"  className="btn btn-secondary btn-sm w-full" style={{justifyContent:'center'}}>Login</Link>
+                <Link href="/signup" className="btn btn-primary btn-sm w-full" style={{justifyContent:'center'}}>Sign Up</Link>
+              </div>
+            )}
           </div>
         </div>
       </nav>

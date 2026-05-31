@@ -1,8 +1,20 @@
 'use client';
+import { useEffect, useState } from 'react';
 import styles from './About.module.css';
-import { Wrench, Award } from '@/components/ui/Icons';
+import { getWebsiteConfig } from '@/lib/db';
+import { Wrench, Award, Shield } from '@/components/ui/Icons';
 
 export default function AboutPage() {
+  const [config, setConfig] = useState<any>(null);
+
+  useEffect(() => {
+    setConfig(getWebsiteConfig());
+  }, []);
+
+  if (!config) {
+    return <div className="loading-overlay"><div className="loading-spinner" /></div>;
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.glow} />
@@ -12,7 +24,7 @@ export default function AboutPage() {
           <span className="section-badge">Our Mission</span>
           <h1 className={styles.title}>About <span className="text-gradient">Tech IoT Warriors</span></h1>
           <p className={styles.subtitle}>
-            Building India's largest and most premium learning platform for hardware prototyping, MCU firmware, and IoT development.
+            {config.aboutMission}
           </p>
         </div>
 
@@ -23,15 +35,9 @@ export default function AboutPage() {
               <Wrench size={22} color="var(--matte-gold)" />
               <span>The Hardware Education Problem</span>
             </h2>
-            <p>
-              Traditional computer science and electronics courses teach abstract theories, circuit equations, and memorized diagrams. 
-              But when students try to compile actual code, wire pullups, or transmit sensor values to a real database, they encounter errors, 
-              port detection bugs, and logic loops.
-            </p>
-            <p style={{ marginTop: 12 }}>
-              <strong>Tech IoT Warriors</strong> was established to fix this. We teach completely by building <strong>real practical prototypes</strong>. 
-              If you aren't plugging in wires, writing code in the IDE, and sending data to the cloud, you aren't learning!
-            </p>
+            <div style={{ whiteSpace: 'pre-line', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
+              {config.aboutProblem}
+            </div>
           </div>
 
           <div className={`glass-card ${styles.card}`} style={{ borderLeftColor: 'var(--matte-gold)' }}>
@@ -40,10 +46,51 @@ export default function AboutPage() {
               <span>What We Deliver</span>
             </h2>
             <ul className={styles.list}>
-              <li><strong>Pre-Tested Matching IoT Kits:</strong> No more ordering broken sensors or wrong parts. We ship verified hardware matching our curriculum modules.</li>
-              <li><strong>Dual Language Instruction (English + Hindi):</strong> Easy, accessible explanations explaining embedded architecture logic.</li>
-              <li><strong>Real Doubt Resolvers:</strong> Paste compilation logs, stack traces, and schematic loops. Get expert debugger assistance.</li>
+              {config.aboutDeliver.map((d: string, idx: number) => {
+                const parts = d.split(':');
+                if (parts.length > 1) {
+                  return (
+                    <li key={idx}>
+                      <strong>{parts[0]}:</strong>{parts.slice(1).join(':')}
+                    </li>
+                  );
+                }
+                return <li key={idx}>{d}</li>;
+              })}
             </ul>
+          </div>
+
+          {/* Premium Founder Section */}
+          <div className={`glass-card ${styles.card}`} style={{ borderTop: '2px solid var(--matte-gold)', boxShadow: '0 4px 30px rgba(212, 175, 55, 0.05)' }}>
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)' }}>
+              <Shield size={22} />
+              <span>CEO &amp; Founder</span>
+            </h2>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', marginTop: '16px', flexWrap: 'wrap' }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--matte-gold), var(--gold-light))',
+                color: 'var(--premium-black)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: '1.8rem',
+                boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
+                flexShrink: 0
+              }}>
+                NK
+              </div>
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <h3 style={{ fontSize: '1.2rem', color: 'var(--luxury-white)' }}>{config.founderName}</h3>
+                <p style={{ fontSize: '0.8rem', color: 'var(--matte-gold)', fontWeight: 600 }}>{config.founderRole}</p>
+                <p style={{ marginTop: '10px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  {config.founderBio}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

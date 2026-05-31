@@ -305,3 +305,54 @@
   .avatarCol { flex-direction: column; }
   .overviewGrid { grid-template-columns: 1fr; }
 }
+
+/* Downloads Section */
+.downloadsSection {
+  animation: fadeIn 0.25s ease;
+}
+
+.downloadGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.downloadCard {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-normal);
+}
+
+.downloadCard:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 15px rgba(212,175,55,0.05);
+}
+
+.downloadMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.dlCourseTitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.dlFileName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--luxury-white);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+

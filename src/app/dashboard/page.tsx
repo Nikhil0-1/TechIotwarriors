@@ -1,9 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { getCurrentUser, setCurrentUser, getRegisteredUsers, updateUsersDb } from '@/lib/db';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { getCurrentUser, setCurrentUser, getRegisteredUsers, updateUsersDb, getCourses } from '@/lib/db';
 import styles from './Dashboard.module.css';
-import { BookOpen, Shield, Wrench, LogOut, Rocket, Play, Bell, Calendar, Trophy, Alert, Lock } from '@/components/ui/Icons';
+import { BookOpen, Shield, Wrench, LogOut, Rocket, Play, Bell, Calendar, Trophy, Alert, Lock, Download, Box } from '@/components/ui/Icons';
 
 export default function StudentDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -14,6 +14,10 @@ export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [successMsg, setSuccessMsg] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Load announcements
+  const [announcements, setAnnouncements] = useState<string[]>([]);
 
   useEffect(() => {
     const current = getCurrentUser();
@@ -24,7 +28,35 @@ export default function StudentDashboard() {
     setUser(current);
     setName(current.name);
     setPhone(current.phone || '');
+
+    // Load announcements
+    const storedAnn = localStorage.getItem('announcements') || '[]';
+    setAnnouncements(JSON.parse(storedAnn));
+
+    // Handle profile photo from localStorage
+    const savedPhoto = localStorage.getItem(`avatar_${current.email}`);
+    if (savedPhoto) setPhoto(savedPhoto);
   }, [router]);
+
+  // Read URL query params to switch tabs and focus fields
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['overview', 'security', 'profile', 'downloads'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+
+    const focusParam = searchParams.get('focus');
+    if (focusParam === 'password') {
+      setActiveTab('profile');
+      setTimeout(() => {
+        const el = document.getElementById('password-form-section');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          el.style.animation = 'pulse-gold 1s ease 2';
+        }
+      }, 300);
+    }
+  }, [searchParams]);
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +66,6 @@ export default function StudentDashboard() {
     const updatedUsers = users.map(u => {
       if (u.email === user.email) {
         const updated = { ...u, name, phone };
-        // Sync local current user
         setCurrentUser(updated);
         setUser(updated);
         return updated;
@@ -49,7 +80,7 @@ export default function StudentDashboard() {
   const handlePasswordUpdate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!password.trim()) return;
-    setSuccessMsg('Password updated successfully!');
+    setSuccessMsg('Account password updated successfully! Session key re-authorized.');
     setPassword('');
   };
 
@@ -58,8 +89,10 @@ export default function StudentDashboard() {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhoto(reader.result as string);
-        setSuccessMsg('Profile image updated!');
+        const base64 = reader.result as string;
+        setPhoto(base64);
+        localStorage.setItem(`avatar_${user.email}`, base64);
+        setSuccessMsg('Profile avatar image synchronized.');
       };
       reader.readAsDataURL(file);
     }
@@ -94,6 +127,51 @@ export default function StudentDashboard() {
     updateUsersDb(updatedUsers);
     setCurrentUser(null);
     router.push('/login');
+  };
+
+  // Dynamic Course Downloads Scaffolder
+  const getCourseDownloadsList = () => {
+    const courses = getCourses();
+    const list: any[] = [];
+    
+    courses.forEach(c => {
+      // Add default resources based on course modules
+      c.modules.forEach(m => {
+        m.lessons.forEach(l => {
+          if (l.resources && l.resources.length > 0) {
+            l.resources.forEach(r => {
+              list.push({
+                courseTitle: c.title,
+                fileName: r.name,
+                fileType: r.type.toUpperCase(),
+                url: r.url,
+                id: l.id
+              });
+            });
+          }
+        });
+      });
+    });
+
+    // Fallbacks if admin hasn't added resource files to DB yet
+    if (list.length === 0) {
+      return [
+        { courseTitle: 'Electronics Basics & Circuit Designing', fileName: 'Electronics_Basics_Manual_V1.pdf', fileType: 'PDF', url: '#' },
+        { courseTitle: 'Arduino Programming & Circuit Building', fileName: 'Arduino_Core_Schematics.pdf', fileType: 'PDF', url: '#' },
+        { courseTitle: 'ESP8266 WiFi & Home Automation IoT', fileName: 'Relay_Home_Switchboard_Source.ino', fileType: 'INO', url: '#' },
+        { courseTitle: 'ESP32 Advanced IoT with FreeRTOS & HTTP', fileName: 'FreeRTOS_Task_Queues_Examples.zip', fileType: 'ZIP', url: '#' },
+        { courseTitle: 'Real-world Smart IoT Industrial Projects', fileName: 'ESP32_CCTV_Camera_Server_Firmware.zip', fileType: 'ZIP', url: '#' },
+      ];
+    }
+    return list;
+  };
+
+  const handleSimulateDownload = (fileName: string) => {
+    setSuccessMsg(`Initiated secure download: ${fileName}`);
+    // Simulate minor download delay
+    setTimeout(() => {
+      setSuccessMsg('');
+    }, 3000);
   };
 
   if (!user) return <div className="loading-overlay"><div className="loading-spinner" /></div>;
@@ -150,6 +228,14 @@ export default function StudentDashboard() {
               <span>Learning Overview</span>
             </button>
             <button
+              onClick={() => setActiveTab('downloads')}
+              className={`${styles.sideLink} ${activeTab === 'downloads' ? styles.activeSide : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            >
+              <Download size={16} />
+              <span>Download Resources</span>
+            </button>
+            <button
               onClick={() => setActiveTab('security')}
               className={`${styles.sideLink} ${activeTab === 'security' ? styles.activeSide : ''}`}
               style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
@@ -177,6 +263,7 @@ export default function StudentDashboard() {
 
           {/* Main Dashboard Panel */}
           <div className={styles.panel}>
+            {/* Tab 1: Learning Overview */}
             {activeTab === 'overview' && (
               <div className={styles.overview}>
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -210,17 +297,22 @@ export default function StudentDashboard() {
                   <div className={`glass-card ${styles.innerCard}`}>
                     <h4 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                       <Bell size={16} color="var(--matte-gold)" />
-                      <span>Class Live Reminders</span>
+                      <span>Class Live Reminders &amp; Broadcasts</span>
                     </h4>
                     <ul className={styles.innerList}>
-                      <li>
-                        <strong style={{ color: '#EF4444' }}>Live Now:</strong>
-                        <p>ESP32 Cam Smart Facial Lock Assembly is streaming. Join Classroom.</p>
-                      </li>
-                      <li style={{ marginTop: 12 }}>
-                        <strong>Upcoming:</strong>
-                        <p>Connecting Local Sensors to AWS IoT Core MQTT Server (June 12).</p>
-                      </li>
+                      {announcements.length > 0 ? (
+                        announcements.slice(0, 3).map((ann, idx) => (
+                          <li key={idx} style={{ marginTop: idx > 0 ? 12 : 0 }}>
+                            <strong style={{ color: 'var(--matte-gold)' }}>Notice:</strong>
+                            <p>{ann}</p>
+                          </li>
+                        ))
+                      ) : (
+                        <li>
+                          <strong style={{ color: '#EF4444' }}>Live Now:</strong>
+                          <p>ESP32 Cam Smart Facial Lock Assembly is streaming. Join Classroom.</p>
+                        </li>
+                      )}
                     </ul>
                   </div>
 
@@ -244,6 +336,37 @@ export default function StudentDashboard() {
               </div>
             )}
 
+            {/* Tab 2: Downloads tab */}
+            {activeTab === 'downloads' && (
+              <div className={styles.downloadsSection}>
+                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Download size={20} color="var(--matte-gold)" />
+                  <span>Download Course Resources</span>
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+                  Retrieve lecture worksheets, MCU C/C++ code scripts, and Fritzing wiring diagrams unlocked by your courses.
+                </p>
+
+                <div className={styles.downloadGrid}>
+                  {getCourseDownloadsList().map((dl, idx) => (
+                    <div key={idx} className={`glass-card ${styles.downloadCard}`}>
+                      <div className={styles.downloadMeta}>
+                        <span className={styles.dlCourseTitle}>{dl.courseTitle}</span>
+                        <h4 className={styles.dlFileName}>{dl.fileName}</h4>
+                        <span className={`badge ${dl.fileType === 'PDF' ? 'badge-green' : dl.fileType === 'ZIP' ? 'badge-blue' : 'badge-gold'}`} style={{ alignSelf: 'flex-start', marginTop: 8 }}>
+                          {dl.fileType} Resource File
+                        </span>
+                      </div>
+                      <button onClick={() => handleSimulateDownload(dl.fileName)} className="btn btn-outline-gold btn-sm w-full flex-center" style={{ marginTop: 16 }}>
+                        <Download size={14} /> Download File
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tab 3: Security & Devices */}
             {activeTab === 'security' && (
               <div className={styles.security}>
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -283,6 +406,7 @@ export default function StudentDashboard() {
               </div>
             )}
 
+            {/* Tab 4: Profile Settings */}
             {activeTab === 'profile' && (
               <div className={styles.profile}>
                 <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -320,27 +444,29 @@ export default function StudentDashboard() {
 
                 <div className="gold-divider" style={{ margin: '32px 0' }} />
 
-                <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Lock size={20} color="var(--matte-gold)" />
-                  <span>Update Account Password</span>
-                </h3>
-                <form onSubmit={handlePasswordUpdate} className={styles.form} style={{ marginTop: 20 }}>
-                  <div className="form-group">
-                    <label className="form-label">New Password:</label>
-                    <input
-                      type="password"
-                      required
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      className="form-input"
-                      style={{ maxWidth: 350 }}
-                    />
-                  </div>
-                  <button type="submit" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }}>
-                    Update Password
-                  </button>
-                </form>
+                <div id="password-form-section" style={{ transition: 'all 0.4s' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Lock size={20} color="var(--matte-gold)" />
+                    <span>Update Account Password</span>
+                  </h3>
+                  <form onSubmit={handlePasswordUpdate} className={styles.form} style={{ marginTop: 20 }}>
+                    <div className="form-group">
+                      <label className="form-label">New Password:</label>
+                      <input
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        className="form-input"
+                        style={{ maxWidth: 350 }}
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-secondary" style={{ alignSelf: 'flex-start' }}>
+                      Update Password
+                    </button>
+                  </form>
+                </div>
               </div>
             )}
           </div>

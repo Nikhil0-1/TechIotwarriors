@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './ReviewsSection.module.css';
 import { User, Wrench, Award } from '../ui/Icons';
+import { getReviews } from '@/lib/db';
 
 const REVIEWS = [
   {
@@ -43,8 +44,16 @@ const ReviewAvatar = ({ type, size = 28 }: { type: string; size?: number }) => {
   }
 };
 
+
 export function ReviewsSection() {
+  const [reviews, setReviews] = useState<any[]>([]);
   const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    setReviews(getReviews());
+  }, []);
+
+  if (reviews.length === 0) return null;
 
   return (
     <section className={`section ${styles.section}`} id="reviews">
@@ -62,25 +71,25 @@ export function ReviewsSection() {
           {/* Main Review Card */}
           <div className={`glass-card ${styles.card}`}>
             <div className={styles.stars}>
-              {Array.from({ length: REVIEWS[active].rating }).map((_, i) => (
+              {Array.from({ length: reviews[active].rating }).map((_, i) => (
                 <span key={i} className={styles.star}>★</span>
               ))}
             </div>
-            <p className={styles.text}>"{REVIEWS[active].text}"</p>
+            <p className={styles.text}>"{reviews[active].text}"</p>
             <div className={styles.user}>
               <span className={styles.avatar}>
-                <ReviewAvatar type={REVIEWS[active].avatar} />
+                <ReviewAvatar type={reviews[active].avatar} />
               </span>
               <div className={styles.userInfo}>
-                <h4 className={styles.userName}>{REVIEWS[active].name}</h4>
-                <p className={styles.userRole}>{REVIEWS[active].role}</p>
+                <h4 className={styles.userName}>{reviews[active].name}</h4>
+                <p className={styles.userRole}>{reviews[active].role}</p>
               </div>
             </div>
           </div>
 
           {/* Slider Pagination Controls */}
           <div className={styles.controls}>
-            {REVIEWS.map((_, idx) => (
+            {reviews.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setActive(idx)}
@@ -94,3 +103,4 @@ export function ReviewsSection() {
     </section>
   );
 }
+

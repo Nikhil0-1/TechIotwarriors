@@ -249,3 +249,163 @@
 @media (max-width: 480px) {
   .mobileLinks { grid-template-columns: 1fr; }
 }
+
+/* Profile Dropdown */
+.profileWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.profileBtn {
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarChar {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--matte-gold);
+  text-shadow: 0 0 10px rgba(212,175,55,0.4);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 260px;
+  background: rgba(11, 11, 11, 0.96);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(212, 175, 55, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideDownScale 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 1000;
+  transform-origin: top right;
+}
+
+@keyframes slideDownScale {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdownAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--matte-gold), var(--gold-light));
+  color: var(--premium-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+.dropdownMeta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dropdownName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--luxury-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownEmail {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownRole {
+  font-size: 0.65rem;
+  color: var(--matte-gold);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+  margin: 4px 0;
+}
+
+.dropdownLinks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dropdownLinks a {
+  display: block;
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.dropdownLinks a:hover {
+  color: var(--matte-gold);
+  background: rgba(212, 175, 55, 0.08);
+  padding-left: 14px;
+}
+
+.logoutBtn {
+  width: 100%;
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: 6px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background: #EF4444;
+  color: var(--luxury-white);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.3);
+}
+
+.mobileProfileRow {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+}
+

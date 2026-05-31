@@ -110,7 +110,16 @@ const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
   }
 };
 
+import { useEffect, useState } from 'react';
+import { getCourses, Course } from '@/lib/db';
+
 export function CoursesSection() {
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    setCourses(getCourses());
+  }, []);
+
   return (
     <section className={`section ${styles.section}`} id="courses">
       <div className="container">
@@ -123,7 +132,7 @@ export function CoursesSection() {
         </div>
 
         <div className={styles.grid}>
-          {FEATURED_COURSES.map((course, idx) => (
+          {courses.map((course, idx) => (
             <div key={course.id} className={`glass-card ${styles.card} reveal reveal-delay-${(idx % 3) + 1}`}>
               {/* Card Thumbnail Area */}
               <div className={styles.thumbArea}>
@@ -188,3 +197,4 @@ export function CoursesSection() {
     </section>
   );
 }
+

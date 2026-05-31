@@ -27,7 +27,19 @@ const FOOTER_LINKS = {
   ],
 };
 
+import { useEffect, useState } from 'react';
+import { getWebsiteConfig } from '@/lib/db';
+
 export function Footer() {
+  const [config, setConfig] = useState<any>(null);
+
+  useEffect(() => {
+    setConfig(getWebsiteConfig());
+  }, []);
+
+  const tagline = config ? config.footerTagline : "India's most premium IoT learning platform. Build real projects with Arduino, ESP32 & ESP8266.";
+  const copyright = config ? config.footerCopyright : "© 2026 Tech IoT Warriors. All rights reserved.";
+
   return (
     <footer className={styles.footer}>
       <div className={styles.glow} />
@@ -41,7 +53,10 @@ export function Footer() {
               <span className={styles.logoText}>Tech <span className={styles.gold}>IoT</span> Warriors</span>
             </Link>
             <p className={styles.tagline}>
-              India's most premium IoT learning platform. Build real projects with Arduino, ESP32 &amp; ESP8266.
+              {tagline}
+            </p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--matte-gold)', marginTop: '8px', fontWeight: '500' }}>
+              CEO & Founder: {config ? config.founderName : "Nikhil Kumar"}
             </p>
             <div className={styles.socials}>
               {['YouTube', 'Telegram', 'Instagram', 'GitHub'].map(s => (
@@ -84,7 +99,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className={styles.bottom}>
-          <p className={styles.copy}>© 2025 Tech IoT Warriors. All rights reserved.</p>
+          <p className={styles.copy}>{copyright}</p>
           <div className={styles.legal}>
             <Link href="/privacy" className={styles.legalLink}>Privacy Policy</Link>
             <Link href="/terms"   className={styles.legalLink}>Terms of Service</Link>
@@ -103,3 +118,4 @@ export function Footer() {
     </footer>
   );
 }
+
