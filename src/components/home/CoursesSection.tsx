@@ -2,20 +2,8 @@
 import Link from 'next/link';
 import styles from './CoursesSection.module.css';
 import { Cpu, Zap, Globe, Wifi, Rocket, Wrench, Clock, BookOpen, Star } from '../ui/Icons';
-
-export interface Course {
-  id: string;
-  title: string;
-  desc: string;
-  duration: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  lessons: number;
-  rating: number;
-  price: string;
-  originalPrice: string;
-  thumbnail: string;
-  tags: string[];
-}
+import { useEffect, useState } from 'react';
+import { getCourses, Course } from '@/lib/db';
 
 export const FEATURED_COURSES: Course[] = [
   {
@@ -30,6 +18,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹2,999',
     thumbnail: 'zap',
     tags: ['Basic', 'Electronics'],
+    isPremium: false,
+    certificateEnabled: true,
+    modules: [],
   },
   {
     id: 'beginner-iot-mastery',
@@ -43,6 +34,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹3,999',
     thumbnail: 'globe',
     tags: ['IoT', 'Beginner'],
+    isPremium: false,
+    certificateEnabled: true,
+    modules: [],
   },
   {
     id: 'arduino-mastery',
@@ -56,6 +50,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹3,499',
     thumbnail: 'cpu',
     tags: ['Arduino', 'Coding'],
+    isPremium: false,
+    certificateEnabled: true,
+    modules: [],
   },
   {
     id: 'esp8266-iot',
@@ -69,6 +66,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹4,999',
     thumbnail: 'wifi',
     tags: ['ESP8266', 'WiFi'],
+    isPremium: true,
+    certificateEnabled: true,
+    modules: [],
   },
   {
     id: 'esp32-advanced-iot',
@@ -82,6 +82,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹7,999',
     thumbnail: 'rocket',
     tags: ['ESP32', 'Advanced'],
+    isPremium: true,
+    certificateEnabled: true,
+    modules: [],
   },
   {
     id: 'real-iot-projects',
@@ -95,6 +98,9 @@ export const FEATURED_COURSES: Course[] = [
     originalPrice: '₹9,999',
     thumbnail: 'wrench',
     tags: ['Hardware', 'Projects'],
+    isPremium: true,
+    certificateEnabled: true,
+    modules: [],
   },
 ];
 
@@ -109,9 +115,6 @@ const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
     default: return <BookOpen size={size} color="var(--matte-gold)" />;
   }
 };
-
-import { useEffect, useState } from 'react';
-import { getCourses, Course } from '@/lib/db';
 
 export function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);

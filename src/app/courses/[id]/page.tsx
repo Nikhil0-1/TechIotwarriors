@@ -130,7 +130,7 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
                       </button>
                       {expandedModule === idx && (
                         <div className={styles.lessonsList}>
-                          {mod.lessons.map((les, lidx) => (
+                          {mod.lessons.map((les: { title: string; url: string; duration?: string; isPreview?: boolean }, lidx: number) => (
                             <button
                               key={lidx}
                               onClick={() => setSelectedVideo({ title: les.title, url: les.url })}
