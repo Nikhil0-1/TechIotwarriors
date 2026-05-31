@@ -114,9 +114,9 @@ function CertificatesContent() {
     const LGREY = '#666666'; // Darker light-grey
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 1. BACKGROUND (white/ivory)
+    // 1. BACKGROUND (pure white)
     // ═══════════════════════════════════════════════════════════════════════
-    ctx.fillStyle = '#FAFAFA';
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, W, H);
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -230,9 +230,9 @@ function CertificatesContent() {
     // 8. LOGO — Actual Uploaded Tech IoT Warriors Logo
     // ═══════════════════════════════════════════════════════════════════════
     if (logoImgRef.current) {
-      const logoW = 280;
-      const logoH = 280;
-      ctx.drawImage(logoImgRef.current, CX - logoW / 2, 20, logoW, logoH);
+      const logoW = 250;
+      const logoH = 250;
+      ctx.drawImage(logoImgRef.current, CX - logoW / 2, 28, logoW, logoH);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -277,9 +277,15 @@ function CertificatesContent() {
     // ═══════════════════════════════════════════════════════════════════════
     // 12. STUDENT NAME (DYNAMIC) — Alex Brush gold cursive, signature style
     // ═══════════════════════════════════════════════════════════════════════
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.15)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 1.5;
+    ctx.shadowOffsetY = 1.5;
     ctx.fillStyle = GOLD;
-    ctx.font = '110px "Alex Brush", cursive';
+    ctx.font = '115px "Alex Brush", cursive';
     ctx.fillText(cert.studentName, CX, 625);
+    ctx.restore();
 
     // Decorative flourish underline
     const nw = Math.min(ctx.measureText(cert.studentName).width * 0.72, 640);
@@ -428,8 +434,8 @@ function CertificatesContent() {
       // ── Handwritten signature in Alex Brush (italic cursive)
       ctx.textAlign = 'center';
       ctx.fillStyle = BLACK;
-      ctx.font = 'italic 62px "Alex Brush", cursive';
-      ctx.fillText('Nikhil Kumar', sigCX, 908); // Moved up significantly to prevent overlap
+      ctx.font = 'italic 72px "Alex Brush", cursive';
+      ctx.fillText('Nikhil Kumar', sigCX, 904); // Moved up significantly to prevent overlap
 
       // ── Signature underline
       ctx.strokeStyle = ga(0.5); ctx.lineWidth = 1.5; // Darker and thicker line
