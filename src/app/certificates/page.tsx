@@ -14,6 +14,7 @@ function CertificatesContent() {
   const [submittingQuiz, setSubmittingQuiz] = useState(false);
   const [generatedCert, setGeneratedCert] = useState<VerifiedCertificate | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const logoImgRef = useRef<HTMLImageElement | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [verifyInput, setVerifyInput] = useState('');
   const [verificationResult, setVerificationResult] = useState<VerifiedCertificate | null>(null);
@@ -42,6 +43,9 @@ function CertificatesContent() {
       link.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alex+Brush&family=Montserrat:wght@400;500;600;700;800&display=swap';
       document.head.appendChild(link);
     }
+    const img = new Image();
+    img.onload = () => { logoImgRef.current = img; };
+    img.src = '/tiw-logo-actual.jpg';
   }, []);
 
   const QUESTIONS = [
@@ -222,78 +226,13 @@ function CertificatesContent() {
     //    Traces: 5 horizontal gold lines with hollow end-circles
     //    Text: TECH (black bold) IoT (gold bold) | WARRIORS | tagline
     // ═══════════════════════════════════════════════════════════════════════
-    {
-      const lx = CX;          // logo horizontal centre
-      const ly = 138;         // circle centre y (raised slightly for better top balance)
-      const R  = 60;          // circle radius
-
-      // ── GOLD CIRCLE: open arc, gap at upper-right
-      //    Clockwise from 1:30 o'clock (-π*0.25) → around → 11 o'clock (-π*0.67)
-      //    Gap visible at the top-right, from 11 o'clock to 1:30 o'clock
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 7;
-      ctx.beginPath();
-      ctx.arc(lx, ly, R, -PI * 0.25, -PI * 0.67, false);
-      ctx.stroke();
-
-      // ── T LETTER inside circle
-      // Gold crossbar — thick, square-capped, spanning the top third of circle
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 9; ctx.lineCap = 'square';
-      ctx.beginPath();
-      ctx.moveTo(lx - 34, ly - 22);
-      ctx.lineTo(lx + 34, ly - 22);
-      ctx.stroke();
-
-      // Black vertical stem — very thick, centered
-      ctx.strokeStyle = BLACK; ctx.lineWidth = 15; ctx.lineCap = 'butt';
-      ctx.beginPath();
-      ctx.moveTo(lx, ly - 22);
-      ctx.lineTo(lx, ly + 28);
-      ctx.stroke();
-
-      // ── PCB CIRCUIT TRACES — right side of T, horizontal with hollow pad circles
-      //    5 traces fanning outward to the right from the T stem region
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 1.8; ctx.lineCap = 'butt';
-      const tSX = lx + 12;      // trace start x (just right of stem edge)
-      const tBY = ly - 10;      // trace base y (starts near crossbar)
-      [
-        { dy: -14, len: 32 },
-        { dy:  -4, len: 42 },
-        { dy:   6, len: 47 },
-        { dy:  16, len: 40 },
-        { dy:  26, len: 35 },
-      ].forEach(t => {
-        const ty = tBY + t.dy;
-        const ex = tSX + t.len;
-        // Horizontal trace line
-        ctx.beginPath(); ctx.moveTo(tSX, ty); ctx.lineTo(ex, ty);
-        ctx.strokeStyle = GOLD; ctx.stroke();
-        // Hollow terminal circle
-        ctx.beginPath(); ctx.arc(ex + 5, ty, 4.5, 0, PI * 2);
-        ctx.strokeStyle = GOLD; ctx.stroke();
-      });
-
-      // ── BRAND TEXT BELOW CIRCLE ──────────────────────────────────────────
-      // "TECH" black bold + "IoT" gold bold — same line, perfectly centred
-      ctx.font = '800 42px "Montserrat", sans-serif';
-      const techW = ctx.measureText('TECH ').width;
-      const iotW  = ctx.measureText('IoT').width;
-      const bTX   = CX - (techW + iotW) / 2;
-      ctx.textAlign = 'left';
-      ctx.fillStyle = BLACK; ctx.fillText('TECH ', bTX, 238);
-      ctx.fillStyle = GOLD;  ctx.fillText('IoT',   bTX + techW, 238);
-
-      // "WARRIORS" in black, with tight gold em-dash lines on each side
-      ctx.textAlign = 'center';
-      ctx.fillStyle = BLACK; ctx.font = '700 14px "Montserrat", sans-serif';
-      const warW2 = ctx.measureText('WARRIORS').width / 2;
-      ctx.fillText('WARRIORS', CX, 266);
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 1.8;
-      ctx.beginPath(); ctx.moveTo(CX - warW2 - 20, 262); ctx.lineTo(CX - warW2 - 5, 262); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(CX + warW2 + 5,  262); ctx.lineTo(CX + warW2 + 20, 262); ctx.stroke();
-
-      // "BUILD • LEARN • INNOVATE" — small gold tagline
-      ctx.fillStyle = GOLD; ctx.font = '500 11.5px "Montserrat", sans-serif';
-      ctx.fillText('BUILD  •  LEARN  •  INNOVATE', CX, 286);
+    // ═══════════════════════════════════════════════════════════════════════
+    // 8. LOGO — Actual Uploaded Tech IoT Warriors Logo
+    // ═══════════════════════════════════════════════════════════════════════
+    if (logoImgRef.current) {
+      const logoW = 280;
+      const logoH = 280;
+      ctx.drawImage(logoImgRef.current, CX - logoW / 2, 20, logoW, logoH);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
