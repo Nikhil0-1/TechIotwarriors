@@ -25,7 +25,7 @@
   border-radius: 50%;
   filter: blur(140px);
   pointer-events: none;
-  opacity: 0.25; /* Increased opacity for light background */
+  opacity: 0.15;
   z-index: 1;
 }
 
@@ -42,7 +42,7 @@
   left: -5%;
   width: 600px;
   height: 600px;
-  background: var(--gold-light); /* Changed from dark-gray to gold-light */
+  background: var(--dark-gray);
 }
 
 .orb3 {
@@ -59,9 +59,9 @@
   position: absolute;
   inset: 0;
   background-image: 
-    radial-gradient(circle, rgba(212, 175, 55, 0.15) 1px, transparent 1px),
-    linear-gradient(to right, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+    radial-gradient(circle, rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
   background-size: 40px 40px, 40px 40px, 40px 40px;
   z-index: 1;
   opacity: 0.8;
@@ -86,13 +86,13 @@
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: var(--radius-full);
   font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--gold-dark);
+  font-weight: 600;
+  color: var(--matte-gold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 24px;
   animation: fadeInUp 0.8s ease;
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.15); /* Soft premium shadow */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .badgeDot {
@@ -164,7 +164,7 @@
   border-color: var(--glass-border-hover);
   background: var(--glass-bg-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
 }
 
 .trustIcon {
@@ -185,12 +185,12 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(11, 11, 11, 0.6);
   padding: 16px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), 0 0 20px rgba(212, 175, 55, 0.15);
+  box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
 }
 
@@ -235,7 +235,7 @@
   letter-spacing: 0.15em;
   color: var(--text-muted);
   z-index: 10;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .scrollMouse {

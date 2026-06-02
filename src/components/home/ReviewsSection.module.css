@@ -29,7 +29,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(11, 11, 11, 0.5) !important;
+  background: rgba(20, 20, 22, 0.5) !important;
   border-color: rgba(212, 175, 55, 0.2) !important;
   box-shadow: var(--gold-shadow);
 }
@@ -64,8 +64,8 @@
 
 .avatar {
   font-size: 2rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -100,7 +100,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--glass-bg-hover);
+  background: rgba(255, 255, 255, 0.15);
   border: none;
   cursor: pointer;
   transition: all var(--transition-normal);

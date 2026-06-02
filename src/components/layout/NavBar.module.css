@@ -10,11 +10,11 @@
 }
 
 .nav.scrolled {
-  background: rgba(255, 255, 255, 0.85); /* Frosted glass white */
+  background: rgba(20, 20, 22, 0.92);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
 }
 
 .inner {
@@ -44,7 +44,7 @@
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--luxury-text);
+  color: var(--luxury-white);
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
@@ -66,7 +66,7 @@
   padding: 8px 12px;
   font-size: 0.82rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: rgba(248,247,242,0.7);
   border-radius: 8px;
   white-space: nowrap;
   transition: all 0.25s ease;
@@ -110,9 +110,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid var(--glass-border);
+  color: rgba(248,247,242,0.7);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
   transition: all 0.25s ease;
   cursor: pointer;
 }
@@ -139,7 +139,7 @@
   display: block;
   width: 24px;
   height: 2px;
-  background: var(--luxury-text);
+  background: var(--luxury-white);
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -154,7 +154,7 @@
   top: var(--navbar-h);
   left: 0;
   right: 0;
-  background: rgba(11,11,11,0.97);
+  background: rgba(20,20,22,0.97);
   backdrop-filter: blur(24px);
   border-bottom: 1px solid rgba(212,175,55,0.15);
   padding: 16px 24px 24px;
@@ -193,7 +193,7 @@
   background: rgba(212,175,55,0.08);
 }
 
-.mobileActions { margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 20px; }
+.mobileActions { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
 
 /* Search Overlay */
 .searchOverlay {
@@ -277,7 +277,7 @@
   top: calc(100% + 12px);
   right: 0;
   width: 260px;
-  background: rgba(11, 11, 11, 0.96);
+  background: rgba(20, 20, 22, 0.96);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 12px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(212, 175, 55, 0.1);
@@ -403,9 +403,8 @@
 }
 
 .mobileProfileRow {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(212, 175, 55, 0.1);
   border-radius: 8px;
   padding: 12px;
 }
-

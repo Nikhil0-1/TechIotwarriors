@@ -8,33 +8,34 @@
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Brand Colors */
-  --luxury-white:     #FFFFFF;
+  --luxury-white:     #F8F7F2;
   --matte-gold:       #D4AF37;
   --gold-light:       #E8C84A;
   --gold-dark:        #B8952A;
-  --gold-hover:       #C49A1A; /* Premium Gold Hover */
-  
-  /* The new Light Theme Colors */
-  --premium-black:    #F5F5F0; /* Main Background: warm Russian white */
-  --dark-gray:        #ECE8DF; /* Section Alternate Background */
-  --mid-gray:         #E2E8F0;
-  --soft-gray:        #CBD5E1;
-  --text-muted:       #475569; /* Secondary Text */
-  --text-secondary:   #475569;
-  --luxury-text:      #111827; /* Premium Dark Text */
+  --premium-black:    #141416; /* Softened premium dark background */
+  --dark-gray:        #1F1F23; /* Softened section alternate background */
+  --mid-gray:         #2B2B31;
+  --soft-gray:        #3C3C45;
+  --text-muted:       #8E8E93;
+  --text-secondary:   #D1D1D6;
 
-  /* Glassmorphism - Light Mode */
-  --glass-bg:         rgba(255, 255, 255, 0.85); /* Card Background */
-  --glass-bg-hover:   rgba(255, 255, 255, 0.95);
-  --glass-border:     rgba(212, 175, 55, 0.18); /* Soft Border */
+  /* Premium Russian Blue */
+  --russian-blue:       #0F1E36;
+  --russian-blue-light: #1D3557;
+  --russian-blue-glow:  rgba(29, 53, 87, 0.25);
+
+  /* Glassmorphism */
+  --glass-bg:         rgba(255, 255, 255, 0.04);
+  --glass-bg-hover:   rgba(255, 255, 255, 0.08);
+  --glass-border:     rgba(212, 175, 55, 0.15);
   --glass-border-hover: rgba(212, 175, 55, 0.4);
 
   /* Glow Effects */
-  --gold-glow:        rgba(212, 175, 55, 0.18);
-  --gold-glow-strong: rgba(212, 175, 55, 0.35);
-  --gold-shadow:      0 0 40px rgba(212, 175, 55, 0.15);
-  --card-shadow:      0 8px 30px rgba(0, 0, 0, 0.08); /* Soft Shadow */
-  --card-shadow-hover:0 20px 40px rgba(0, 0, 0, 0.12), 0 0 20px rgba(212,175,55,0.15);
+  --gold-glow:        rgba(212, 175, 55, 0.35);
+  --gold-glow-strong: rgba(212, 175, 55, 0.6);
+  --gold-shadow:      0 0 40px rgba(212, 175, 55, 0.25);
+  --card-shadow:      0 8px 40px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover:0 20px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212,175,55,0.2);
 
   /* Spacing */
   --space-xs:  4px;
@@ -82,8 +83,8 @@ html {
 }
 
 body {
-  background-color: var(--premium-black); /* Now #F8FAFC */
-  color: var(--luxury-text); /* Now #1E293B */
+  background-color: var(--premium-black);
+  color: var(--luxury-white);
   font-family: var(--font-sans);
   line-height: 1.6;
   overflow-x: hidden;
@@ -210,8 +211,8 @@ button { cursor: pointer; }
 .btn:hover::before { transform: translateX(0); }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--matte-gold), var(--gold-hover));
-  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--matte-gold), var(--gold-light));
+  color: var(--premium-black);
   box-shadow: 0 4px 24px rgba(212,175,55,0.4);
 }
 
@@ -221,14 +222,15 @@ button { cursor: pointer; }
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--luxury-text);
-  border: 1px solid var(--matte-gold);
+  background: transparent;
+  color: var(--luxury-white);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .btn-secondary:hover {
-  background: #FFFFFF;
-  box-shadow: 0 4px 20px rgba(212,175,55,0.25);
+  border-color: var(--matte-gold);
+  color: var(--matte-gold);
+  box-shadow: 0 0 20px rgba(212,175,55,0.2);
   transform: translateY(-2px);
 }
 
@@ -238,8 +240,8 @@ button { cursor: pointer; }
   border: 1px solid var(--matte-gold);
 }
 .btn-outline-gold:hover {
-  background: rgba(212,175,55,0.05);
-  box-shadow: 0 4px 24px rgba(212,175,55,0.2);
+  background: rgba(212,175,55,0.1);
+  box-shadow: 0 0 24px rgba(212,175,55,0.3);
   transform: translateY(-2px);
 }
 
@@ -292,18 +294,18 @@ button { cursor: pointer; }
 .form-input {
   width: 100%;
   padding: 14px 18px;
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: var(--radius-md);
-  color: var(--luxury-text);
+  color: var(--luxury-white);
   font-size: 0.95rem;
   transition: all var(--transition-normal);
 }
 
 .form-input:focus {
   border-color: var(--matte-gold);
-  background: rgba(212, 175, 55, 0.03);
   box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+  background: rgba(255,255,255,0.07);
 }
 
 .form-input::placeholder { color: var(--text-muted); }
