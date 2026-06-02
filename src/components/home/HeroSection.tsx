@@ -123,22 +123,6 @@ export function HeroSection() {
       {/* Circuit grid */}
       <div className={styles.circuitGrid} />
 
-      {/* Floating devices */}
-      <div className={styles.floatingDevices}>
-        <div className={`${styles.device} ${styles.arduino}`}>
-          <ArduinoSVG />
-          <span className={styles.deviceLabel}>Arduino UNO</span>
-        </div>
-        <div className={`${styles.device} ${styles.esp32}`}>
-          <ESP32SVG />
-          <span className={styles.deviceLabel}>ESP32</span>
-        </div>
-        <div className={`${styles.device} ${styles.esp8266}`}>
-          <ESP8266SVG />
-          <span className={styles.deviceLabel}>ESP8266</span>
-        </div>
-      </div>
-
       {/* Content */}
       <div className={`container ${styles.content}`}>
         <div className={styles.badge} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -184,14 +168,6 @@ export function HeroSection() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className={styles.scrollIndicator}>
-        <div className={styles.scrollMouse}>
-          <div className={styles.scrollDot} />
-        </div>
-        <span>Scroll to explore</span>
       </div>
     </section>
   );
