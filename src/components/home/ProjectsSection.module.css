@@ -139,11 +139,28 @@
   }
 }
 
+@media (max-width: 768px) {
+  .tabs {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .tab {
+    flex-shrink: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: 1fr;
   }
   .card {
-    padding: 24px;
+    padding: 24px 20px;
   }
 }
