@@ -218,6 +218,10 @@
     margin-bottom: 18px;
   }
   .diagram code {
-    font-size: 0.76rem;
+    font-size: 0.74rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    text-align: center;
+    display: inline-block;
   }
 }
