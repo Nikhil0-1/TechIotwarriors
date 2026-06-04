@@ -24,6 +24,16 @@ export default function ProjectsPage() {
 
   useEffect(() => {
     setProjects(getProjects());
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'iot_projects') {
+        setProjects(getProjects());
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   const categories = ['All', 'Automation Projects', 'Sensor Projects', 'Robot Projects', 'Security System', 'ESP32 Camera'];

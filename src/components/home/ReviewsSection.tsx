@@ -51,6 +51,16 @@ export function ReviewsSection() {
 
   useEffect(() => {
     setReviews(getReviews());
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'reviews_db') {
+        setReviews(getReviews());
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   if (reviews.length === 0) return null;

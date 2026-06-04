@@ -24,6 +24,16 @@ export default function CoursesPage() {
 
   useEffect(() => {
     setCourses(getCourses());
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'courses_db') {
+        setCourses(getCourses());
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];

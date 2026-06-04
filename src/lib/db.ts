@@ -1,5 +1,8 @@
 'use client';
 
+import { db } from './firebase';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+
 export interface UserSession {
   email: string;
   name: string;
@@ -313,6 +316,7 @@ export function getCourses(): Course[] {
 export function saveCourses(courses: Course[]) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('courses_db', JSON.stringify(courses));
+  setDoc(doc(db, 'site_data', 'courses'), { value: courses }).catch(console.error);
 }
 
 // Review getters / setters
@@ -329,6 +333,7 @@ export function getReviews(): Review[] {
 export function saveReviews(reviews: Review[]) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('reviews_db', JSON.stringify(reviews));
+  setDoc(doc(db, 'site_data', 'reviews'), { value: reviews }).catch(console.error);
 }
 
 // WebsiteConfig getters / setters
@@ -345,6 +350,7 @@ export function getWebsiteConfig(): WebsiteConfig {
 export function saveWebsiteConfig(config: WebsiteConfig) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('website_config_db', JSON.stringify(config));
+  setDoc(doc(db, 'site_data', 'config'), { value: config }).catch(console.error);
 }
 
 // Backwards compatibility for homepage config
@@ -390,6 +396,7 @@ export function getCertificates(): VerifiedCertificate[] {
 export function saveCertificates(certs: VerifiedCertificate[]) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('certificates_db', JSON.stringify(certs));
+  setDoc(doc(db, 'site_data', 'certificates'), { value: certs }).catch(console.error);
 }
 
 export function verifyCertificate(certNumber: string): VerifiedCertificate | null {
@@ -447,7 +454,9 @@ export function getRegisteredUsers(): UserSession[] {
 }
 
 export function updateUsersDb(users: UserSession[]) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem(KEY_USERS_DB, JSON.stringify(users));
+  setDoc(doc(db, 'site_data', 'users'), { value: users }).catch(console.error);
 }
 
 export function getCurrentUser(): UserSession | null {
@@ -522,7 +531,9 @@ export function getCodeSnippets(): CodeSnippet[] {
 }
 
 export function saveCodeSnippets(snippets: CodeSnippet[]) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('iot_code_snippets', JSON.stringify(snippets));
+  setDoc(doc(db, 'site_data', 'snippets'), { value: snippets }).catch(console.error);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -597,7 +608,9 @@ export function getCircuits(): Circuit[] {
 }
 
 export function saveCircuits(circuits: Circuit[]) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('iot_circuits', JSON.stringify(circuits));
+  setDoc(doc(db, 'site_data', 'circuits'), { value: circuits }).catch(console.error);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -681,7 +694,9 @@ export function getProjects(): Project[] {
 }
 
 export function saveProjects(projects: Project[]) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('iot_projects', JSON.stringify(projects));
+  setDoc(doc(db, 'site_data', 'projects'), { value: projects }).catch(console.error);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -748,7 +763,9 @@ export function getLiveClasses(): LiveClass[] {
 }
 
 export function saveLiveClasses(classes: LiveClass[]) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('iot_live_classes', JSON.stringify(classes));
+  setDoc(doc(db, 'site_data', 'live_classes'), { value: classes }).catch(console.error);
 }
 
 // Handwritten Signature settings
@@ -763,4 +780,109 @@ export function getSignatureConfig() {
 export function saveSignatureConfig(config: { name: string; designation: string; image: string }) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('certificate_signature_config', JSON.stringify(config));
+  setDoc(doc(db, 'site_data', 'signature'), { value: config }).catch(console.error);
+}
+
+// ─────────────────────────────────────────────────────────
+// FIRESTORE REALTIME SYNC ENGINE
+// ─────────────────────────────────────────────────────────
+let isSyncInitialized = false;
+
+export function setupFirestoreSync() {
+  if (typeof window === 'undefined' || isSyncInitialized) return;
+  isSyncInitialized = true;
+
+  const syncKey = (key: string, docName: string, defaultValue: any) => {
+    // 1. Initial local load / seed if empty
+    const local = localStorage.getItem(key);
+    if (!local) {
+      localStorage.setItem(key, JSON.stringify(defaultValue));
+    }
+
+    // 2. Set up realtime sync listener from Firestore
+    const docRef = doc(db, 'site_data', docName);
+    onSnapshot(docRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const cloudVal = snapshot.data().value;
+        const currentLocal = localStorage.getItem(key);
+        if (JSON.stringify(cloudVal) !== currentLocal) {
+          localStorage.setItem(key, JSON.stringify(cloudVal));
+          // Dispatch a custom event to notify components
+          window.dispatchEvent(new CustomEvent('db_sync', { detail: { key } }));
+        }
+      } else {
+        // Document doesn't exist, initialize Firestore with local data
+        const currentLocal = localStorage.getItem(key);
+        const dataToUpload = currentLocal ? JSON.parse(currentLocal) : defaultValue;
+        setDoc(docRef, { value: dataToUpload }).catch(err => console.error("Firestore init error for " + docName, err));
+      }
+    }, (err) => {
+      console.error("Firestore sync error for " + docName, err);
+    });
+  };
+
+  // Sync keys
+  syncKey('courses_db', 'courses', DEFAULT_COURSES);
+  syncKey('reviews_db', 'reviews', DEFAULT_REVIEWS);
+  syncKey('website_config_db', 'config', DEFAULT_WEBSITE_CONFIG);
+  
+  const defaultCerts = [
+    {
+      id: 'cert_tiw_default_1',
+      certNumber: 'TIW-2026-0001',
+      studentName: 'Nikhil Kumar',
+      courseName: 'Real-world Smart IoT Industrial Projects',
+      completionDate: '26 May 2026',
+      verificationCode: 'TIW001',
+      grade: 'Distinction'
+    }
+  ];
+  syncKey('certificates_db', 'certificates', defaultCerts);
+
+  const defaultUsers = [
+    {
+      email: 'admin@techiotwarriors.com',
+      name: 'Super Admin Devendra',
+      phone: '+91 99999 88888',
+      role: 'Super Admin',
+      isActive: true,
+      isSuspended: false,
+      status: 'Active',
+      devices: ['Chrome Windows-PC Session-1'],
+      currentSessionId: 'session_admin_123'
+    },
+    {
+      email: 'student@techiotwarriors.com',
+      name: 'Amit Patel',
+      phone: '+91 88888 77777',
+      role: 'Student',
+      isActive: true,
+      isSuspended: false,
+      status: 'Active',
+      devices: ['Safari MacOS Session-2'],
+      currentSessionId: 'session_student_123'
+    },
+    {
+      email: 'newbie@techiotwarriors.com',
+      name: 'Suresh Kumar',
+      phone: '+91 77777 66666',
+      role: 'Student',
+      isActive: false,
+      isSuspended: false,
+      status: 'Pending Verification',
+      devices: [],
+      currentSessionId: ''
+    }
+  ];
+  syncKey('iot_users_database', 'users', defaultUsers);
+  syncKey('iot_code_snippets', 'snippets', DEFAULT_SNIPPETS);
+  syncKey('iot_circuits', 'circuits', DEFAULT_CIRCUITS);
+  syncKey('iot_projects', 'projects', DEFAULT_PROJECTS);
+  syncKey('iot_live_classes', 'live_classes', DEFAULT_LIVE_CLASSES);
+  syncKey('certificate_signature_config', 'signature', { name: 'Nikhil Kumar', designation: 'CEO & Founder', image: '' });
+}
+
+// Call setup immediately if on client side
+if (typeof window !== 'undefined') {
+  setupFirestoreSync();
 }

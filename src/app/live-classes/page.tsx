@@ -10,6 +10,16 @@ export default function LiveClassesPage() {
 
   useEffect(() => {
     setClassesList(getLiveClasses());
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'iot_live_classes') {
+        setClassesList(getLiveClasses());
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   return (

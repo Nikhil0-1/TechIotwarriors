@@ -36,6 +36,21 @@ function StudentDashboardContent() {
     // Handle profile photo from localStorage
     const savedPhoto = localStorage.getItem(`avatar_${current.email}`);
     if (savedPhoto) setPhoto(savedPhoto);
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'iot_users_database') {
+        const fresh = getCurrentUser();
+        if (fresh) {
+          setUser(fresh);
+          setName(fresh.name);
+          setPhone(fresh.phone || '');
+        }
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, [router]);
 
   // Read URL query params to switch tabs and focus fields

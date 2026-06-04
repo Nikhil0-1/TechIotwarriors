@@ -27,9 +27,18 @@ function CertificatesContent() {
     if (verifyId) {
       setActiveTab('verify');
       setVerifyInput(verifyId);
-      const record = verifyCertificate(verifyId);
-      setVerificationResult(record);
+      setVerificationResult(verifyCertificate(verifyId));
       setHasSearched(true);
+
+      const handleSync = (e: any) => {
+        if (e.detail?.key === 'certificates_db') {
+          setVerificationResult(verifyCertificate(verifyId));
+        }
+      };
+      window.addEventListener('db_sync', handleSync);
+      return () => {
+        window.removeEventListener('db_sync', handleSync);
+      };
     }
   }, [searchParams]);
 

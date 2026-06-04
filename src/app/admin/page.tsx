@@ -149,6 +149,14 @@ export default function AdminDashboard() {
 
     const announcements = localStorage.getItem('announcements') || '[]';
     setAnnouncementsList(JSON.parse(announcements));
+
+    const handleSync = () => {
+      refreshData();
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   const refreshData = () => {
