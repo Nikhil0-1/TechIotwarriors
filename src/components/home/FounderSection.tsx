@@ -9,11 +9,21 @@ export function FounderSection() {
 
   useEffect(() => {
     setConfig(getWebsiteConfig());
+
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'website_config_db') {
+        setConfig(getWebsiteConfig());
+      }
+    };
+    window.addEventListener('db_sync', handleSync);
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+    };
   }, []);
 
   const name = config ? config.founderName : 'Nikhil Kumar';
   const role = config ? config.founderRole : 'CEO & Founder, Tech IoT Warriors';
-  const bio = config ? config.founderBio : 'Nikhil Kumar is an IoT Architect and Founder of Tech IoT Warriors...';
+  const bio = config ? config.founderBio : 'Nikhil Kumar is an IoT Architect and Founder of Tech IoT Warriors. Driven by a mission to transform hardware education, he has helped thousands of students move past theory into building actual hardware prototypes.';
 
   return (
     <section className={`section ${styles.section}`} id="founder">

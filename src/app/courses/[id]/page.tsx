@@ -5,8 +5,12 @@ import { notFound } from 'next/navigation';
 import { getCourses } from '@/lib/db';
 import styles from './CourseDetailsPage.module.css';
 import { Star, Clock, BookOpen, Play, Download, MessageSquare, Box, Zap } from '@/components/ui/Icons';
+import * as React from 'react';
 
-export default function CourseDetailsPage({ params }: { params: { id: string } }) {
+export default function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = React.use(params);
+  const courseId = unwrappedParams.id;
+
   const [course, setCourse] = useState<any>(null);
   const [modules, setModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,20 +22,51 @@ export default function CourseDetailsPage({ params }: { params: { id: string } }
   });
 
   useEffect(() => {
-    const list = getCourses();
-    const found = list.find(c => c.id === params.id);
-    if (found) {
-      setCourse(found);
-      setModules(found.modules || []);
-      if (found.modules && found.modules.length > 0 && found.modules[0].lessons.length > 0) {
-        setSelectedVideo({
-          title: found.modules[0].lessons[0].title,
-          url: found.modules[0].lessons[0].url
-        });
+    const loadCourse = () => {
+      const list = getCourses();
+      const found = list.find(c => c.id === courseId);
+      if (found) {
+        setCourse(found);
+        setModules(found.modules || []);
+        if (found.modules && found.modules.length > 0 && found.modules[0].lessons.length > 0) {
+          setSelectedVideo({
+            title: found.modules[0].lessons[0].title,
+            url: found.modules[0].lessons[0].url
+          });
+        }
+        setLoading(false);
+        return true;
       }
-    }
-    setLoading(false);
-  }, [params.id]);
+      return false;
+    };
+
+    // Try loading immediately
+    const foundImmediately = loadCourse();
+
+    // If not found immediately, it might be syncing from Firestore in the background
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'courses_db') {
+        const found = loadCourse();
+        if (found) {
+          setLoading(false);
+        }
+      }
+    };
+
+    window.addEventListener('db_sync', handleSync);
+
+    // Timeout to trigger 404 if course not found after 2.5s of sync waiting
+    const timer = setTimeout(() => {
+      if (!loadCourse()) {
+        setLoading(false);
+      }
+    }, 2500);
+
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+      clearTimeout(timer);
+    };
+  }, [courseId]);
 
   if (loading) {
     return <div className="loading-overlay"><div className="loading-spinner" /></div>;

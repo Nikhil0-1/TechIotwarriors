@@ -5,19 +5,56 @@ import { notFound } from 'next/navigation';
 import { getProjects, Project } from '@/lib/db';
 import styles from './ProjectDetailsPage.module.css';
 import { Wrench, Plug, Alert, Code, Copy, Download, Award, Zap } from '@/components/ui/Icons';
+import * as React from 'react';
 
-export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+export default function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const unwrappedParams = React.use(params);
+  const projectId = unwrappedParams.id;
+
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState('code');
 
   useEffect(() => {
-    const list = getProjects();
-    const found = list.find(p => p.id === params.id);
-    setProject(found || null);
-    setLoading(false);
-  }, [params.id]);
+    const loadProject = () => {
+      const list = getProjects();
+      const found = list.find(p => p.id === projectId);
+      if (found) {
+        setProject(found);
+        setLoading(false);
+        return true;
+      }
+      return false;
+    };
+
+    // Try loading immediately
+    const foundImmediately = loadProject();
+
+    // If not found immediately, wait for Firestore sync
+    const handleSync = (e: any) => {
+      if (e.detail?.key === 'iot_projects') {
+        const found = loadProject();
+        if (found) {
+          setLoading(false);
+        }
+      }
+    };
+
+    window.addEventListener('db_sync', handleSync);
+
+    // Timeout fallback for 404
+    const timer = setTimeout(() => {
+      if (!loadProject()) {
+        setLoading(false);
+      }
+    }, 2500);
+
+    return () => {
+      window.removeEventListener('db_sync', handleSync);
+      clearTimeout(timer);
+    };
+  }, [projectId]);
 
   if (loading) {
     return (
