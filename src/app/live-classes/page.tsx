@@ -1,55 +1,16 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './LiveClasses.module.css';
 import { Bell, Calendar, Clock } from '@/components/ui/Icons';
-
-interface LiveClass {
-  title: string;
-  instructor: string;
-  date: string;
-  time: string;
-  status: 'LIVE NOW' | 'UPCOMING' | 'COMPLETED';
-  meetingLink?: string;
-  replayLink?: string;
-}
-
-const CLASSES_DATA: LiveClass[] = [
-  {
-    title: 'ESP32 Cam Smart Facial Lock Assembly & Debugging',
-    instructor: 'Mr. Devendra (Senior IoT Lead)',
-    date: 'June 05, 2026',
-    time: '07:00 PM - 08:30 PM IST',
-    status: 'LIVE NOW',
-    meetingLink: 'https://meet.google.com/abc-defg-hij',
-  },
-  {
-    title: 'Connecting Local Sensors to AWS IoT Core MQTT Server',
-    instructor: 'Mr. Devendra (Senior IoT Lead)',
-    date: 'June 12, 2026',
-    time: '07:00 PM - 08:30 PM IST',
-    status: 'UPCOMING',
-    meetingLink: 'https://meet.google.com/abc-defg-hij',
-  },
-  {
-    title: 'Troubleshooting Common C++ Compiler & Stack Pointer Errors',
-    instructor: 'Mr. Amit Sharma (Embedded Dev)',
-    date: 'May 24, 2026',
-    time: '06:00 PM - 07:30 PM IST',
-    status: 'COMPLETED',
-    replayLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  },
-  {
-    title: 'Understanding Multi-Threading on ESP32 Dual Core using FreeRTOS',
-    instructor: 'Mr. Devendra (Senior IoT Lead)',
-    date: 'May 17, 2026',
-    time: '07:00 PM - 09:00 PM IST',
-    status: 'COMPLETED',
-    replayLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  }
-];
+import { getLiveClasses, LiveClass } from '@/lib/db';
 
 export default function LiveClassesPage() {
   const [subscribed, setSubscribed] = useState(false);
+  const [classesList, setClassesList] = useState<LiveClass[]>([]);
+
+  useEffect(() => {
+    setClassesList(getLiveClasses());
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -84,7 +45,7 @@ export default function LiveClassesPage() {
 
         {/* Classes Layout */}
         <div className={styles.grid}>
-          {CLASSES_DATA.map((c, i) => (
+          {classesList.map((c, i) => (
             <div key={i} className={`glass-card ${styles.card} ${c.status === 'LIVE NOW' ? styles.liveCard : ''}`}>
               <div className={styles.cardHeader}>
                 <span className={`badge ${c.status === 'LIVE NOW' ? 'badge-red' : c.status === 'UPCOMING' ? 'badge-gold' : 'badge-blue'}`}>

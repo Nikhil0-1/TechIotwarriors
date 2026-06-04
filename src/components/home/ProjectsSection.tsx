@@ -1,18 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './ProjectsSection.module.css';
 import { Home, Sun, Cpu, Lock, Wifi, Globe, Wrench } from '../ui/Icons';
-
-export interface Project {
-  id: string;
-  title: string;
-  category: string;
-  desc: string;
-  complexity: 'Beginner' | 'Intermediate' | 'Advanced';
-  components: string[];
-  icon: string;
-}
+import { getProjects, Project } from '@/lib/db';
 
 export const PROJECTS_DATA: Project[] = [
   {
@@ -85,12 +76,17 @@ const ProjectIcon = ({ type, size = 24 }: { type: string; size?: number }) => {
 
 export function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    setProjects(getProjects());
+  }, []);
 
   const categories = ['All', 'Automation Projects', 'Sensor Projects', 'Robot Projects', 'Security System'];
 
   const filteredProjects = activeCategory === 'All'
-    ? PROJECTS_DATA
-    : PROJECTS_DATA.filter(p => p.category === activeCategory);
+    ? projects
+    : projects.filter(p => p.category === activeCategory);
 
   return (
     <section className={`section ${styles.section}`} id="projects">

@@ -1,11 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getCurrentUser, setCurrentUser, getRegisteredUsers, updateUsersDb, getCourses } from '@/lib/db';
 import styles from './Dashboard.module.css';
 import { BookOpen, Shield, Wrench, LogOut, Rocket, Play, Bell, Calendar, Trophy, Alert, Lock, Download, Box } from '@/components/ui/Icons';
 
-export default function StudentDashboard() {
+function StudentDashboardContent() {
   const [user, setUser] = useState<any>(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -473,5 +473,13 @@ export default function StudentDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function StudentDashboard() {
+  return (
+    <Suspense fallback={<div className="loading-overlay"><div className="loading-spinner" /></div>}>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }

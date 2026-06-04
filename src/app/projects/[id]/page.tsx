@@ -1,19 +1,36 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { PROJECTS_DATA } from '@/components/home/ProjectsSection';
+import { getProjects, Project } from '@/lib/db';
 import styles from './ProjectDetailsPage.module.css';
 import { Wrench, Plug, Alert, Code, Copy, Download, Award, Zap } from '@/components/ui/Icons';
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const project = PROJECTS_DATA.find(p => p.id === params.id);
-  if (!project) {
-    notFound();
-  }
-
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState('code');
+
+  useEffect(() => {
+    const list = getProjects();
+    const found = list.find(p => p.id === params.id);
+    setProject(found || null);
+    setLoading(false);
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className={styles.container} style={{ textAlign: 'center', padding: '100px 0' }}>
+        <p style={{ marginTop: 16, color: 'var(--text-muted)' }}>Loading Build Details...</p>
+      </div>
+    );
+  }
+
+  if (!project) {
+    notFound();
+    return null;
+  }
 
   const SAMPLE_CODE = `/*
  * Tech IoT Warriors - ${project.title}

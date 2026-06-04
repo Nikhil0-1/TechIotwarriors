@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './Certificates.module.css';
-import { getCertificates, saveCertificates, verifyCertificate, VerifiedCertificate } from '@/lib/db';
+import { getCertificates, saveCertificates, verifyCertificate, VerifiedCertificate, getSignatureConfig } from '@/lib/db';
 import { Shield, BookOpen, Download, Search, Check, Alert } from '@/components/ui/Icons';
 
 function CertificatesContent() {
@@ -89,7 +89,45 @@ function CertificatesContent() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    document.fonts.ready.then(() => performDraw(ctx, canvas, cert));
+
+    canvas.width = 1600;
+    canvas.height = 1100;
+
+    const logoImg = new Image();
+    logoImg.src = '/tiw-logo-actual.jpg';
+
+    const qrImg = new Image();
+    qrImg.crossOrigin = 'anonymous';
+    const verifyUrl = `${window.location.origin}/certificates?verify=${cert.certNumber}`;
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verifyUrl)}`;
+
+    const sigConfig = getSignatureConfig();
+    const sigImg = new Image();
+    if (sigConfig.image) {
+      sigImg.crossOrigin = 'anonymous';
+      sigImg.src = sigConfig.image;
+    }
+
+    const loadPromise = (img: HTMLImageElement) => {
+      return new Promise<HTMLImageElement>((resolve) => {
+        if (!img.src) {
+          resolve(img);
+          return;
+        }
+        if (img.complete && img.naturalWidth > 0) {
+          resolve(img);
+        } else {
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(img);
+        }
+      });
+    };
+
+    Promise.all([loadPromise(logoImg), loadPromise(qrImg), loadPromise(sigImg)]).then(([loadedLogo, loadedQr, loadedSig]) => {
+      document.fonts.ready.then(() => {
+        performDraw(ctx, canvas, cert, loadedLogo, loadedQr, loadedSig, sigConfig);
+      });
+    });
   };
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -98,7 +136,15 @@ function CertificatesContent() {
   //  DYNAMIC: studentName, certNumber, completionDate, courseName
   //  FIXED: logo, layout, description, badges, signature
   // ═══════════════════════════════════════════════════════════════════════
-  const performDraw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, cert: VerifiedCertificate) => {
+  const performDraw = (
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    cert: VerifiedCertificate,
+    loadedLogo: HTMLImageElement,
+    loadedQr: HTMLImageElement,
+    loadedSig: HTMLImageElement,
+    sigConfig: { name: string, designation: string, image: string }
+  ) => {
     canvas.width  = 1600;
     canvas.height = 1100;
     const W  = canvas.width;
@@ -114,10 +160,21 @@ function CertificatesContent() {
     const LGREY = '#666666'; // Darker light-grey
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 1. BACKGROUND (pure white)
+    // 1. BACKGROUND (soft cream/off-white with concentric dotted rings)
     // ═══════════════════════════════════════════════════════════════════════
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = '#FCFAF6';
     ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(178, 135, 42, 0.05)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([2, 8]);
+    for (let r = 250; r < 1400; r += 60) {
+      ctx.beginPath();
+      ctx.arc(CX, 100, r, 0, PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
 
     // ═══════════════════════════════════════════════════════════════════════
     // 2. OUTER GOLD BORDER
@@ -141,7 +198,7 @@ function CertificatesContent() {
     crosshair(42, H - 42);
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 4. TOP-LEFT BLACK CORNER SWEEP (with two gold accent curves)
+    // 4. TOP-LEFT BLACK CORNER SWEEP (with gold circuit corner lines)
     // ═══════════════════════════════════════════════════════════════════════
     ctx.fillStyle = BLACK;
     ctx.beginPath();
@@ -157,6 +214,18 @@ function CertificatesContent() {
     ctx.strokeStyle = ga(0.55); ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(268, 0); ctx.bezierCurveTo(150, 27, 75, 92, 0, 268); ctx.stroke();
 
+    // Corner circuit lines
+    ctx.strokeStyle = GOLD; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(40, 95);
+    ctx.lineTo(40, 40);
+    ctx.lineTo(95, 40);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(40, 40, 3.5, 0, PI * 2);
+    ctx.fillStyle = GOLD;
+    ctx.fill();
+
     // ═══════════════════════════════════════════════════════════════════════
     // 5. BOTTOM-RIGHT BLACK CORNER SWEEP
     // ═══════════════════════════════════════════════════════════════════════
@@ -171,6 +240,18 @@ function CertificatesContent() {
     ctx.beginPath(); ctx.moveTo(W - 252, H); ctx.bezierCurveTo(W - 136, H - 20, W - 63, H - 80, W, H - 252); ctx.stroke();
     ctx.strokeStyle = ga(0.55); ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(W - 268, H); ctx.bezierCurveTo(W - 150, H - 27, W - 75, H - 92, W, H - 268); ctx.stroke();
+
+    // Corner circuit lines
+    ctx.strokeStyle = GOLD; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(W - 40, H - 95);
+    ctx.lineTo(W - 40, H - 40);
+    ctx.lineTo(W - 95, H - 40);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W - 40, H - 40, 3.5, 0, PI * 2);
+    ctx.fillStyle = GOLD;
+    ctx.fill();
 
     // ═══════════════════════════════════════════════════════════════════════
     // 6. RIGHT-SIDE PCB CIRCUIT TRACES (matching reference design)
@@ -220,19 +301,12 @@ function CertificatesContent() {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // 8. LOGO — Pixel-perfect match to the uploaded Tech IoT Warriors logo
-    //    Circle: gold open-arc, gap at upper-right
-    //    T: gold crossbar (square caps) + thick black stem
-    //    Traces: 5 horizontal gold lines with hollow end-circles
-    //    Text: TECH (black bold) IoT (gold bold) | WARRIORS | tagline
-    // ═══════════════════════════════════════════════════════════════════════
-    // ═══════════════════════════════════════════════════════════════════════
     // 8. LOGO — Actual Uploaded Tech IoT Warriors Logo
     // ═══════════════════════════════════════════════════════════════════════
-    if (logoImgRef.current) {
+    if (loadedLogo && loadedLogo.naturalWidth > 0) {
       const logoW = 250;
       const logoH = 250;
-      ctx.drawImage(logoImgRef.current, CX - logoW / 2, 28, logoW, logoH);
+      ctx.drawImage(loadedLogo, CX - logoW / 2, 28, logoW, logoH);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -344,7 +418,7 @@ function CertificatesContent() {
       { l1: 'REAL PROJECT', l2: 'DEVELOPMENT',  icon: 'bulb'   },
       { l1: 'PRACTICAL',    l2: 'LEARNING',     icon: 'shield' },
     ];
-    const bX0 = 380, bX1 = W - 380;
+    const bX0 = CX - 320, bX1 = CX + 320;
     const bGap = (bX1 - bX0) / (badges.length - 1);
     const bCY  = 950;
     const wR   = 37;
@@ -405,17 +479,23 @@ function CertificatesContent() {
     {
       const qX = 110, qY = 895, qS = 90;
       ctx.strokeStyle = ga(0.55); ctx.lineWidth = 1.5; ctx.strokeRect(qX, qY, qS, qS);
-      const qrFinder = (fx: number, fy: number) => {
-        ctx.fillStyle = BLACK;   ctx.fillRect(fx, fy, 24, 24);
-        ctx.fillStyle = '#FAFAFA'; ctx.fillRect(fx+4, fy+4, 16, 16);
-        ctx.fillStyle = BLACK;   ctx.fillRect(fx+8, fy+8,  8,  8);
-      };
-      qrFinder(qX+4, qY+4); qrFinder(qX+qS-28, qY+4); qrFinder(qX+4, qY+qS-28);
-      ctx.fillStyle = BLACK;
-      [[34,34],[38,34],[34,38],[44,34],[44,38],[50,34],[34,44],[34,50],[38,44],
-       [44,50],[52,44],[56,50],[34,56],[40,56],[48,60],[34,62],[42,66],[50,58],
-       [56,34],[60,40],[62,34],[58,46],[66,42],[62,52],[52,58],[58,62],[62,58],
-       [66,62],[58,68],[64,68],[38,68],[44,72]].forEach(([dx,dy]) => ctx.fillRect(qX+dx, qY+dy, 5, 5));
+      
+      if (loadedQr && loadedQr.naturalWidth > 0) {
+        ctx.drawImage(loadedQr, qX + 4, qY + 4, qS - 8, qS - 8);
+      } else {
+        const qrFinder = (fx: number, fy: number) => {
+          ctx.fillStyle = BLACK;   ctx.fillRect(fx, fy, 24, 24);
+          ctx.fillStyle = '#FAFAFA'; ctx.fillRect(fx+4, fy+4, 16, 16);
+          ctx.fillStyle = BLACK;   ctx.fillRect(fx+8, fy+8,  8,  8);
+        };
+        qrFinder(qX+4, qY+4); qrFinder(qX+qS-28, qY+4); qrFinder(qX+4, qY+qS-28);
+        ctx.fillStyle = BLACK;
+        [[34,34],[38,34],[34,38],[44,34],[44,38],[50,34],[34,44],[34,50],[38,44],
+         [44,50],[52,44],[56,50],[34,56],[40,56],[48,60],[34,62],[42,66],[50,58],
+         [56,34],[60,40],[62,34],[58,46],[66,42],[62,52],[52,58],[58,62],[62,58],
+         [66,62],[58,68],[64,68],[38,68],[44,72]].forEach(([dx,dy]) => ctx.fillRect(qX+dx, qY+dy, 5, 5));
+      }
+
       ctx.textAlign = 'center';
       ctx.fillStyle = LGREY; ctx.font = '500 11px "Montserrat", sans-serif';
       ctx.fillText('Scan to Verify Certificate', qX + qS/2, qY + qS + 20);
@@ -424,34 +504,39 @@ function CertificatesContent() {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // ═══════════════════════════════════════════════════════════════════════
-    // 19. SIGNATURE BLOCK — bottom right (FIXED — always Nikhil Kumar)
-    //     Signature drawn in Alex Brush (cursive/handwritten style)
+    // 19. SIGNATURE BLOCK — bottom right
     // ═══════════════════════════════════════════════════════════════════════
     {
       const sigCX = W - 255;   // signature block centre x
 
-      // ── Handwritten signature in Alex Brush (italic cursive)
-      ctx.textAlign = 'center';
-      ctx.fillStyle = BLACK;
-      ctx.font = 'italic 72px "Alex Brush", cursive';
-      ctx.fillText('Nikhil Kumar', sigCX, 904); // Moved up significantly to prevent overlap
+      // Handwritten signature image or text fallback
+      if (loadedSig && loadedSig.naturalWidth > 0) {
+        const sigW = 240;
+        const sigH = 90;
+        ctx.drawImage(loadedSig, sigCX - sigW / 2, 932 - sigH, sigW, sigH);
+      } else {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = BLACK;
+        ctx.font = 'italic 72px "Alex Brush", cursive';
+        ctx.fillText(sigConfig.name, sigCX, 904);
+      }
 
-      // ── Signature underline
-      ctx.strokeStyle = ga(0.5); ctx.lineWidth = 1.5; // Darker and thicker line
+      // Underline
+      ctx.strokeStyle = ga(0.5); ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(sigCX - 128, 938); ctx.lineTo(sigCX + 128, 938); ctx.stroke();
 
-      // ── Printed name (bold, below underline)
+      // Printed name
+      ctx.textAlign = 'center';
       ctx.fillStyle = BLACK;
       ctx.font = '700 15px "Montserrat", sans-serif';
-      ctx.fillText('Nikhil Kumar', sigCX, 966);
+      ctx.fillText(sigConfig.name, sigCX, 966);
 
-      // ── Role
+      // Role
       ctx.fillStyle = LGREY;
       ctx.font = '500 12.5px "Montserrat", sans-serif';
-      ctx.fillText('CEO & Founder', sigCX, 988);
+      ctx.fillText(sigConfig.designation, sigCX, 988);
 
-      // ── Company name (bold)
+      // Company name
       ctx.fillStyle = BLACK;
       ctx.font = '800 13px "Montserrat", sans-serif';
       ctx.fillText('Tech IoT Warriors', sigCX, 1008);
@@ -480,6 +565,30 @@ function CertificatesContent() {
     a.href = url;
     a.download = `TechIoTWarriors_Certificate_${studentName.replace(/\s+/g, '_')}.png`;
     a.click();
+  };
+
+  const handlePrintPdf = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL('image/png');
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Tech IoT Warriors Certificate - ${studentName.replace(/\\s+/g, '_')}</title>
+          <style>
+            @page { size: landscape; margin: 0; }
+            body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #fff; }
+            img { max-width: 100%; max-height: 100%; object-fit: contain; }
+          </style>
+        </head>
+        <body>
+          <img src="${dataUrl}" onload="window.print(); window.close();" />
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const handleVerifySearch = (e: React.FormEvent) => {
@@ -570,6 +679,7 @@ function CertificatesContent() {
                     </div>
                     <div className={styles.certButtons}>
                       <button onClick={handleDownload} className="btn btn-primary"><Download size={16} /> Download PNG</button>
+                      <button onClick={handlePrintPdf} className="btn btn-outline-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}><Shield size={16} /> Print / Save PDF</button>
                       <button onClick={() => setQuizPassed(false)} className="btn btn-secondary">Retake Test</button>
                     </div>
                   </div>
@@ -618,6 +728,17 @@ function CertificatesContent() {
                         <div className={styles.detailRow}><span>Status:</span><span className="badge badge-green">Accredited Active</span></div>
                         <div className={styles.detailRow}><span>Signatory:</span><strong>Nikhil Kumar (CEO &amp; Founder)</strong></div>
                       </div>
+                      <div className="gold-divider" style={{ margin: '20px 0 16px' }} />
+                      <button onClick={() => {
+                        setStudentName(verificationResult.studentName);
+                        setCourseSelected(verificationResult.courseName);
+                        setGeneratedCert(verificationResult);
+                        setQuizPassed(true);
+                        setActiveTab('generate');
+                        setTimeout(() => drawCertificate(verificationResult), 200);
+                      }} className="btn btn-primary w-full" style={{ justifyContent: 'center', gap: '8px' }}>
+                        <Download size={16} /> View &amp; Download Dynamic Certificate
+                      </button>
                     </div>
                   ) : (
                     <div className={`glass-card ${styles.unverifiedResultBox}`}>

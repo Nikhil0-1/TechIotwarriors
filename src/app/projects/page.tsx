@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PROJECTS_DATA } from '@/components/home/ProjectsSection';
+import { getProjects, Project } from '@/lib/db';
 import styles from './page.module.css';
 import { Search, Home, Sun, Cpu, Lock, Wifi, Globe } from '@/components/ui/Icons';
 
@@ -20,10 +20,15 @@ const ProjectIcon = ({ type, size = 24 }: { type: string; size?: number }) => {
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [search, setSearch] = useState('');
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    setProjects(getProjects());
+  }, []);
 
   const categories = ['All', 'Automation Projects', 'Sensor Projects', 'Robot Projects', 'Security System', 'ESP32 Camera'];
 
-  const filtered = PROJECTS_DATA.filter(p => {
+  const filtered = projects.filter(p => {
     const matchesCat = activeCategory === 'All' || p.category === activeCategory;
     const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
                           p.desc.toLowerCase().includes(search.toLowerCase()) ||

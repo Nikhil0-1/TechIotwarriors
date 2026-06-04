@@ -369,7 +369,22 @@ export function saveHomepageConfig(config: { heroHeading: string; heroSubheading
 export function getCertificates(): VerifiedCertificate[] {
   if (typeof window === 'undefined') return [];
   const certs = localStorage.getItem('certificates_db');
-  return certs ? JSON.parse(certs) : [];
+  if (!certs) {
+    const defaultCert: VerifiedCertificate[] = [
+      {
+        id: 'cert_tiw_default_1',
+        certNumber: 'TIW-2026-0001',
+        studentName: 'Nikhil Kumar',
+        courseName: 'Real-world Smart IoT Industrial Projects',
+        completionDate: '26 May 2026',
+        verificationCode: 'TIW001',
+        grade: 'Distinction'
+      }
+    ];
+    localStorage.setItem('certificates_db', JSON.stringify(defaultCert));
+    return defaultCert;
+  }
+  return JSON.parse(certs);
 }
 
 export function saveCertificates(certs: VerifiedCertificate[]) {
@@ -583,4 +598,169 @@ export function getCircuits(): Circuit[] {
 
 export function saveCircuits(circuits: Circuit[]) {
   localStorage.setItem('iot_circuits', JSON.stringify(circuits));
+}
+
+// ─────────────────────────────────────────────────────────
+// PROJECTS SHOWCASE DATABASE
+// ─────────────────────────────────────────────────────────
+export interface Project {
+  id: string;
+  title: string;
+  category: string;
+  desc: string;
+  complexity: 'Beginner' | 'Intermediate' | 'Advanced';
+  components: string[];
+  icon: string;
+}
+
+export const DEFAULT_PROJECTS: Project[] = [
+  {
+    id: 'smart-home',
+    title: 'Smart Home Automation Node',
+    category: 'Automation Projects',
+    desc: 'Control lights and AC relays via customized Blynk dashboard, mobile app, and offline physical switches.',
+    complexity: 'Intermediate',
+    components: ['ESP32', 'Relay Module', 'Optocouplers', 'Blynk Cloud'],
+    icon: 'home',
+  },
+  {
+    id: 'iot-weather-station',
+    title: 'Solar Powered IoT Weather Station',
+    category: 'Sensor Projects',
+    desc: 'Log temperature, humidity, pressure, and UV index onto a ThingSpeak panel with low-power deep sleep mode.',
+    complexity: 'Beginner',
+    components: ['Arduino Uno', 'ESP8266', 'DHT22 Sensor', 'BMP280 Sensor'],
+    icon: 'sun',
+  },
+  {
+    id: 'robot-projects',
+    title: 'WiFi Surveillance Robotic Rover',
+    category: 'Robot Projects',
+    desc: 'Steer an omnidirectional robot chassis via WebSocket stream. View low latency live video on dashboard.',
+    complexity: 'Advanced',
+    components: ['ESP32-CAM', 'L298D Motor Driver', 'Li-Ion Batteries', 'WebSockets'],
+    icon: 'cpu',
+  },
+  {
+    id: 'security-system',
+    title: 'Smart RFID & Face Recognition Lock',
+    category: 'Security System',
+    desc: 'Verify credentials locally, trigger solonoids, send real-time intruder snapshot notifications to Telegram.',
+    complexity: 'Advanced',
+    components: ['ESP32 Cam', 'MFRC522 RFID Reader', 'Solenoid Lock', 'Telegram API'],
+    icon: 'lock',
+  },
+  {
+    id: 'sensor-projects',
+    title: 'Wireless Air Quality & Gas Monitor',
+    category: 'Sensor Projects',
+    desc: 'Measure MQ135 PPM levels and display live charts on local OLED screen, push alerts when gas limits breach.',
+    complexity: 'Beginner',
+    components: ['Arduino Nano', 'MQ135 Gas Sensor', '0.96 Inch OLED', 'Buzzer'],
+    icon: 'wifi',
+  },
+  {
+    id: 'esp32-camera',
+    title: 'AI Smart Parking Lot Sensor',
+    category: 'ESP32 Camera',
+    desc: 'Detect car presence using ultrasound grids, log analytics, sync slot availability to Google Firebase database.',
+    complexity: 'Intermediate',
+    components: ['ESP32', 'Ultrasonic Sensors', 'Firebase DB', 'Infrared Sensors'],
+    icon: 'globe',
+  },
+];
+
+export function getProjects(): Project[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('iot_projects');
+  if (!stored) {
+    localStorage.setItem('iot_projects', JSON.stringify(DEFAULT_PROJECTS));
+    return DEFAULT_PROJECTS;
+  }
+  return JSON.parse(stored);
+}
+
+export function saveProjects(projects: Project[]) {
+  localStorage.setItem('iot_projects', JSON.stringify(projects));
+}
+
+// ─────────────────────────────────────────────────────────
+// LIVE CLASSES DATABASE
+// ─────────────────────────────────────────────────────────
+export interface LiveClass {
+  id: string;
+  title: string;
+  instructor: string;
+  date: string;
+  time: string;
+  status: 'LIVE NOW' | 'UPCOMING' | 'COMPLETED';
+  meetingLink?: string;
+  replayLink?: string;
+}
+
+export const DEFAULT_LIVE_CLASSES: LiveClass[] = [
+  {
+    id: 'live-1',
+    title: 'ESP32 Cam Smart Facial Lock Assembly & Debugging',
+    instructor: 'Mr. Devendra (Senior IoT Lead)',
+    date: 'June 05, 2026',
+    time: '07:00 PM - 08:30 PM IST',
+    status: 'LIVE NOW',
+    meetingLink: 'https://meet.google.com/abc-defg-hij',
+  },
+  {
+    id: 'live-2',
+    title: 'Connecting Local Sensors to AWS IoT Core MQTT Server',
+    instructor: 'Mr. Devendra (Senior IoT Lead)',
+    date: 'June 12, 2026',
+    time: '07:00 PM - 08:30 PM IST',
+    status: 'UPCOMING',
+    meetingLink: 'https://meet.google.com/abc-defg-hij',
+  },
+  {
+    id: 'live-3',
+    title: 'Troubleshooting Common C++ Compiler & Stack Pointer Errors',
+    instructor: 'Mr. Amit Sharma (Embedded Dev)',
+    date: 'May 24, 2026',
+    time: '06:00 PM - 07:30 PM IST',
+    status: 'COMPLETED',
+    replayLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  },
+  {
+    id: 'live-4',
+    title: 'Understanding Multi-Threading on ESP32 Dual Core using FreeRTOS',
+    instructor: 'Mr. Devendra (Senior IoT Lead)',
+    date: 'May 17, 2026',
+    time: '07:00 PM - 09:00 PM IST',
+    status: 'COMPLETED',
+    replayLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+  }
+];
+
+export function getLiveClasses(): LiveClass[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem('iot_live_classes');
+  if (!stored) {
+    localStorage.setItem('iot_live_classes', JSON.stringify(DEFAULT_LIVE_CLASSES));
+    return DEFAULT_LIVE_CLASSES;
+  }
+  return JSON.parse(stored);
+}
+
+export function saveLiveClasses(classes: LiveClass[]) {
+  localStorage.setItem('iot_live_classes', JSON.stringify(classes));
+}
+
+// Handwritten Signature settings
+export function getSignatureConfig() {
+  if (typeof window === 'undefined') {
+    return { name: 'Nikhil Kumar', designation: 'CEO & Founder', image: '' };
+  }
+  const saved = localStorage.getItem('certificate_signature_config');
+  return saved ? JSON.parse(saved) : { name: 'Nikhil Kumar', designation: 'CEO & Founder', image: '' };
+}
+
+export function saveSignatureConfig(config: { name: string; designation: string; image: string }) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('certificate_signature_config', JSON.stringify(config));
 }
