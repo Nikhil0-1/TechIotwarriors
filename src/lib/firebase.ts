@@ -5,10 +5,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+import { getDatabase } from "firebase/database";
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBRDZeoSlrd8TGVWwtCqG-nBFOPIus0faA",
   authDomain: "techiotwarriors-d2bcf.firebaseapp.com",
+  databaseURL: "https://techiotwarriors-d2bcf-default-rtdb.firebaseio.com",
   projectId: "techiotwarriors-d2bcf",
   storageBucket: "techiotwarriors-d2bcf.firebasestorage.app",
   messagingSenderId: "1061045052762",
@@ -23,6 +26,7 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const rtdb = getDatabase(app);
 
 // Initialize analytics conditionally on the client-side
 export const initAnalytics = async () => {

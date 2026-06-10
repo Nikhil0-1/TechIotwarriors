@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: checks if user has Super Admin or Instructor role
+    function isAdmin() {
+      return request.auth != null && 
+        (request.auth.token.email == 'admin@techiotwarriors.com' || 
+         request.auth.token.role == 'Super Admin' || 
+         request.auth.token.role == 'Instructor');
+    }
+
+    // Rules for dynamic website contents and telemetry synced databases
+    match /site_data/{document} {
+      // Anyone can read courses, snippets, circuits, and site config
+      allow read: if true;
+
+      // Allow writes to authenticated users (admin checks or user sync logs)
+      allow write: if request.auth != null || isAdmin();
+    }
+
+    // Default safety rules
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "rules": {
+    // By default, restrict read/write access to the database root
+    ".read": false,
+    ".write": false,
+
+    // IoT Sensor Data node - allows ESP32 / controllers to read and write sensor payloads
+    "sensors": {
+      ".read": true,
+      ".write": true,
+      "$sensor_id": {
+        ".validate": "newData.hasChildren(['value', 'timestamp'])"
+      }
+    },
+
+    // Devices status node - tracks hardware connection states
+    "devices": {
+      ".read": true,
+      ".write": true,
+      "$device_id": {
+        "status": {
+          ".validate": "newData.isString() && (newData.val() == 'online' || newData.val() == 'offline')"
+        }
+      }
+    },
+
+    // Secure user-specific nodes (only readable/writable by the owner)
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+
+    // Public demo logging node
+    "public_logs": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
