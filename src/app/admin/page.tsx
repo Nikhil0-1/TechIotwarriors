@@ -23,6 +23,8 @@ import {
   saveProjects,
   getLiveClasses,
   saveLiveClasses,
+  getCoupons,
+  saveCoupons,
   Course,
   Module,
   Lesson,
@@ -31,6 +33,7 @@ import {
   Circuit,
   Project,
   LiveClass,
+  Coupon,
   DEFAULT_SNIPPETS,
   DEFAULT_CIRCUITS,
   DEFAULT_PROJECTS,
@@ -52,6 +55,11 @@ export default function AdminDashboard() {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [newCourseThumbnail, setNewCourseThumbnail] = useState('zap');
+
+  // Coupons database
+  const [couponsList, setCouponsList] = useState<Coupon[]>([]);
+  const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [isCreatingCoupon, setIsCreatingCoupon] = useState(false);
 
   // Libraries database
   const [codeSnippetsList, setCodeSnippetsList] = useState<CodeSnippet[]>([]);
@@ -139,6 +147,7 @@ export default function AdminDashboard() {
     setCircuitsList(getCircuits());
     setProjectsList(getProjects());
     setLiveClassesList(getLiveClasses());
+    setCouponsList(getCoupons());
 
     const sigConfig = getSignatureConfig();
     setSigName(sigConfig.name);
@@ -169,6 +178,7 @@ export default function AdminDashboard() {
     setCircuitsList(getCircuits());
     setProjectsList(getProjects());
     setLiveClassesList(getLiveClasses());
+    setCouponsList(getCoupons());
     const storedPending = localStorage.getItem('pending_payments') || '[]';
     setPendingPayments(JSON.parse(storedPending));
   };
@@ -681,6 +691,64 @@ export default function AdminDashboard() {
     setLiveClassesList([]);
     saveLiveClasses([]);
     showNotification('All Live Classes cleared.');
+  };
+
+  // COUPONS CRUD
+  const saveCouponState = (updatedCoupons: Coupon[]) => {
+    setCouponsList(updatedCoupons);
+    saveCoupons(updatedCoupons);
+  };
+
+  const handleAddCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+
+    const newCoupon: Coupon = {
+      id: 'coupon_' + Math.random().toString(36).substr(2, 9),
+      code: (data.get('code') as string).trim().toUpperCase(),
+      discountType: data.get('discountType') as 'percentage' | 'flat',
+      discountValue: parseInt(data.get('discountValue') as string, 10) || 0,
+      expiryDate: data.get('expiryDate') as string,
+      isActive: data.get('isActive') === 'true'
+    };
+
+    if (couponsList.some(c => c.code === newCoupon.code)) {
+      alert('Coupon code already exists!');
+      return;
+    }
+
+    const updated = [...couponsList, newCoupon];
+    saveCouponState(updated);
+    setIsCreatingCoupon(false);
+    showNotification(`New coupon "${newCoupon.code}" successfully generated.`);
+  };
+
+  const handleEditCouponSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCoupon) return;
+
+    const updatedCoupon = {
+      ...editingCoupon,
+      code: editingCoupon.code.trim().toUpperCase()
+    };
+
+    if (couponsList.some(c => c.id !== updatedCoupon.id && c.code === updatedCoupon.code)) {
+      alert('Another coupon with this code already exists!');
+      return;
+    }
+
+    const updated = couponsList.map(c => c.id === updatedCoupon.id ? updatedCoupon : c);
+    saveCouponState(updated);
+    setEditingCoupon(null);
+    showNotification(`Coupon "${updatedCoupon.code}" configurations updated.`);
+  };
+
+  const handleDeleteCoupon = (id: string) => {
+    if (!confirm('Are you sure you want to permanently delete this coupon?')) return;
+    const updated = couponsList.filter(c => c.id !== id);
+    saveCouponState(updated);
+    showNotification('Coupon successfully deleted.');
   };
 
   // CERTIFICATES MANAGEMENT
@@ -1286,6 +1354,9 @@ export default function AdminDashboard() {
             <button onClick={() => { setActiveTab('payments'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'payments' ? styles.activeSide : ''}`}>
               <Zap size={16} /> <span>UPI Screenshot approvals ({pendingPayments.length})</span>
             </button>
+            <button onClick={() => { setActiveTab('coupons'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'coupons' ? styles.activeSide : ''}`}>
+              <Star size={16} /> <span>Coupons Manager ({couponsList.length})</span>
+            </button>
             <button onClick={() => { setActiveTab('users'); setSidebarOpen(false); }} className={`${styles.sideLink} ${activeTab === 'users' ? styles.activeSide : ''}`}>
               <Shield size={16} /> <span>Student Console</span>
             </button>
@@ -1791,9 +1862,11 @@ export default function AdminDashboard() {
                     </div>
                     <div className="form-group">
                       <label className="form-label">Active Projects Value:</label>
-                      <input type="text" value={webConfig.statsProjects} onChange={e => setWebConfig({...webConfig, statsProjects: e.target.value})} className="form-input" required />
                     </div>
-                              {/* Section C: Founder branding */}
+                  </div>
+                </div>
+
+                {/* Section C: Founder branding */}
                 <div className={`glass-card ${styles.editorGroupCard}`}>
                   <h3>3. Founder Branding (Nikhil Kumar)</h3>
                   <div className="grid-2">
@@ -1836,63 +1909,6 @@ export default function AdminDashboard() {
                       </label>
                     </div>
                   </div>
-                </div>
-
-                {/* Section C2: Co-Founder branding */}
-                <div className={`glass-card ${styles.editorGroupCard}`}>
-                  <h3>3b. Co-Founder Branding (Devendra Kumar)</h3>
-                  <div className="form-group">
-                    <label className="form-label">Co-Founder Profile Status:</label>
-                    <select value={String(webConfig.hasCoFounder)} onChange={e => setWebConfig({...webConfig, hasCoFounder: e.target.value === 'true'})} className="form-input" style={{background: 'var(--dark-gray)'}}>
-                      <option value="true">Show Co-Founder Profile on Website</option>
-                      <option value="false">Hide Co-Founder Profile</option>
-                    </select>
-                  </div>
-                  {webConfig.hasCoFounder && (
-                    <>
-                      <div className="grid-2">
-                        <div className="form-group">
-                          <label className="form-label">Co-Founder Full Name:</label>
-                          <input type="text" value={webConfig.coFounderName || ''} onChange={e => setWebConfig({...webConfig, coFounderName: e.target.value})} className="form-input" required />
-                        </div>
-                        <div className="form-group">
-                          <label className="form-label">Co-Founder Role Title:</label>
-                          <input type="text" value={webConfig.coFounderRole || ''} onChange={e => setWebConfig({...webConfig, coFounderRole: e.target.value})} className="form-input" required />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Co-Founder Profile Bio:</label>
-                        <textarea value={webConfig.coFounderBio || ''} onChange={e => setWebConfig({...webConfig, coFounderBio: e.target.value})} className="form-input" rows={4} required />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Co-Founder Photo (URL or Upload below):</label>
-                        <input type="text" value={webConfig.coFounderPhoto || ''} onChange={e => setWebConfig({...webConfig, coFounderPhoto: e.target.value})} className="form-input" placeholder="e.g. /co-founder.png" />
-                        <div style={{ marginTop: '8px' }}>
-                          <label className="btn btn-outline-gold btn-sm" style={{ cursor: 'pointer', display: 'inline-block' }}>
-                            Upload Co-Founder Photo File
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              style={{ display: 'none' }} 
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  const reader = new FileReader();
-                                  reader.onload = (event) => {
-                                    if (event.target?.result) {
-                                      setWebConfig({...webConfig, coFounderPhoto: event.target.result as string});
-                                    }
-                                  };
-                                  reader.readAsDataURL(file);
-                                }
-                              }}
-                            />
-                          </label>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>      </div>
                 </div>
 
                 {/* Section D: About details */}
@@ -2037,6 +2053,9 @@ export default function AdminDashboard() {
                         <h3>{p.name}</h3>
                         <p>Email: {p.email} | Phone: {p.phone}</p>
                         <p style={{marginTop: 8}}>Purchasing Course: <strong className="text-gold">{p.selectedCourse}</strong></p>
+                        {p.price !== undefined && (
+                          <p style={{marginTop: 4}}>Amount Paid: <strong style={{color: 'var(--matte-gold)', fontWeight: 'bold'}}>₹{p.price}</strong> {p.appliedCoupon && <span style={{color: '#22c55e', fontSize: '0.82rem', fontWeight: 600}}> (Coupon: {p.appliedCoupon})</span>}</p>
+                        )}
                         <span className={styles.timeBadge}>Uploaded at: {p.timestamp}</span>
                       </div>
 
@@ -2064,6 +2083,169 @@ export default function AdminDashboard() {
                   <p>All students payments have been verified and processed.</p>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Tab 4b: Coupon Manager */}
+          {activeTab === 'coupons' && (
+            <div className={styles.panelSection}>
+              <div className={styles.flexHeader}>
+                <div>
+                  <h2>Coupon Code Manager</h2>
+                  <p className={styles.secDesc}>Create, update, delete, and set expiry for promotional coupon discount codes.</p>
+                </div>
+                <button onClick={() => setIsCreatingCoupon(true)} className="btn btn-primary btn-sm flex-center">
+                  <Plus size={14} /> Generate New Coupon
+                </button>
+              </div>
+
+              {/* Coupon creation form */}
+              {isCreatingCoupon && (
+                <div className={`glass-card ${styles.editorFormBox}`}>
+                  <h3>Create New Discount Coupon</h3>
+                  <form onSubmit={handleAddCoupon} className={styles.gridForm}>
+                    <div className="form-group">
+                      <label className="form-label">Coupon Code (e.g. SAVE50):</label>
+                      <input type="text" name="code" required className="form-input" placeholder="e.g. SAVE50" style={{ textTransform: 'uppercase' }} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Discount Type:</label>
+                      <select name="discountType" className="form-input" style={{background: 'var(--dark-gray)'}}>
+                        <option value="percentage">Percentage Discount (%)</option>
+                        <option value="flat">Flat Price Discount (INR)</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Discount Value (e.g. 15 for 15% or 500 for ₹500):</label>
+                      <input type="number" name="discountValue" required className="form-input" placeholder="e.g. 20" />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Expiry Date (YYYY-MM-DD):</label>
+                      <input type="date" name="expiryDate" required className="form-input" defaultValue={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Is Active:</label>
+                      <select name="isActive" className="form-input" style={{background: 'var(--dark-gray)'}}>
+                        <option value="true">Active &amp; Usable</option>
+                        <option value="false">Inactive / Expired</option>
+                      </select>
+                    </div>
+                    <div className={styles.formBtnRow} style={{gridColumn: 'span 2', marginTop: 12}}>
+                      <button type="submit" className="btn btn-primary btn-sm">Generate Coupon</button>
+                      <button type="button" onClick={() => setIsCreatingCoupon(false)} className="btn btn-secondary btn-sm">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Coupon editing form */}
+              {editingCoupon && (
+                <div className={`glass-card ${styles.editorFormBox}`}>
+                  <h3>Edit Coupon Details: {editingCoupon.code}</h3>
+                  <form onSubmit={handleEditCouponSubmit} className={styles.gridForm}>
+                    <div className="form-group">
+                      <label className="form-label">Coupon Code:</label>
+                      <input 
+                        type="text" 
+                        value={editingCoupon.code} 
+                        onChange={e => setEditingCoupon({...editingCoupon, code: e.target.value})} 
+                        required 
+                        className="form-input" 
+                        style={{ textTransform: 'uppercase' }}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Discount Type:</label>
+                      <select 
+                        value={editingCoupon.discountType} 
+                        onChange={e => setEditingCoupon({...editingCoupon, discountType: e.target.value as any})} 
+                        className="form-input" 
+                        style={{background: 'var(--dark-gray)'}}
+                      >
+                        <option value="percentage">Percentage Discount (%)</option>
+                        <option value="flat">Flat Price Discount (INR)</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Discount Value:</label>
+                      <input 
+                        type="number" 
+                        value={editingCoupon.discountValue} 
+                        onChange={e => setEditingCoupon({...editingCoupon, discountValue: parseInt(e.target.value, 10) || 0})} 
+                        required 
+                        className="form-input" 
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Expiry Date (YYYY-MM-DD):</label>
+                      <input 
+                        type="date" 
+                        value={editingCoupon.expiryDate} 
+                        onChange={e => setEditingCoupon({...editingCoupon, expiryDate: e.target.value})} 
+                        required 
+                        className="form-input" 
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Is Active:</label>
+                      <select 
+                        value={String(editingCoupon.isActive)} 
+                        onChange={e => setEditingCoupon({...editingCoupon, isActive: e.target.value === 'true'})} 
+                        className="form-input" 
+                        style={{background: 'var(--dark-gray)'}}
+                      >
+                        <option value="true">Active &amp; Usable</option>
+                        <option value="false">Inactive / Expired</option>
+                      </select>
+                    </div>
+                    <div className={styles.formBtnRow} style={{gridColumn: 'span 2', marginTop: 12}}>
+                      <button type="submit" className="btn btn-primary btn-sm">Save Changes</button>
+                      <button type="button" onClick={() => setEditingCoupon(null)} className="btn btn-secondary btn-sm">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Coupons List Grid */}
+              <div style={{ marginTop: '24px' }}>
+                {couponsList.length > 0 ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                    {couponsList.map(coupon => {
+                      const isExpired = new Date(coupon.expiryDate) < new Date(new Date().toISOString().split('T')[0]);
+                      return (
+                        <div key={coupon.id} className="glass-card" style={{ padding: '20px', border: '1px solid rgba(212,175,55,0.15)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <strong style={{ fontSize: '1.25rem', color: 'var(--matte-gold)', fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>{coupon.code}</strong>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button onClick={() => setEditingCoupon(coupon)} className={styles.iconAction} title="Edit Coupon"><Edit3 size={14} /></button>
+                              <button onClick={() => handleDeleteCoupon(coupon.id)} className={styles.iconAction} style={{color: '#ef4444'}} title="Delete Coupon"><Trash2 size={14} /></button>
+                            </div>
+                          </div>
+                          
+                          <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                            Discount: <strong>{coupon.discountType === 'percentage' ? `${coupon.discountValue}% Off` : `₹${coupon.discountValue} Off`}</strong>
+                          </div>
+
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            Expires on: <span style={{ color: isExpired ? '#ef4444' : 'var(--text-secondary)', fontWeight: isExpired ? 'bold' : 'normal' }}>{coupon.expiryDate} {isExpired && '(Expired)'}</span>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                            <span className={`badge ${coupon.isActive && !isExpired ? 'badge-green' : 'badge-red'}`}>
+                              {coupon.isActive && !isExpired ? 'Active & Valid' : 'Disabled / Expired'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className={styles.emptyStateBox}>
+                    <h4>No discount coupons created yet.</h4>
+                    <p>Click "Generate New Coupon" to create your first coupon code.</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

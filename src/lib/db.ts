@@ -87,11 +87,15 @@ export interface WebsiteConfig {
   founderRole: string;
   founderBio: string;
   founderPhoto: string;
-  coFounderName: string;
-  coFounderRole: string;
-  coFounderBio: string;
-  coFounderPhoto: string;
-  hasCoFounder: boolean;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discountType: 'percentage' | 'flat';
+  discountValue: number;
+  expiryDate: string; // YYYY-MM-DD
+  isActive: boolean;
 }
 
 // Default course content scaffolding
@@ -306,12 +310,7 @@ export const DEFAULT_WEBSITE_CONFIG: WebsiteConfig = {
   founderName: 'Nikhil Kumar',
   founderRole: 'CEO & Founder, Tech IoT Warriors',
   founderBio: 'Nikhil Kumar is an IoT Architect, Embedded Systems Specialist, and the Founder of Tech IoT Warriors. Driven by a mission to transform hardware education, he has helped thousands of students move past theory into building actual hardware prototypes, smart robotics, and enterprise IoT networks.',
-  founderPhoto: '',
-  coFounderName: 'Devendra Kumar',
-  coFounderRole: 'Co-Founder & CTO, Tech IoT Warriors',
-  coFounderBio: 'Devendra Kumar is an embedded firmware developer and co-founder of Tech IoT Warriors. He designs the project course content, hardware schematics, and IoT cloud dashboard setups.',
-  coFounderPhoto: '/co-founder.png',
-  hasCoFounder: true
+  founderPhoto: '/founder.png'
 };
 
 // Course getters / setters
@@ -357,13 +356,55 @@ export function getWebsiteConfig(): WebsiteConfig {
     return DEFAULT_WEBSITE_CONFIG;
   }
   const parsed = JSON.parse(config);
-  return { ...DEFAULT_WEBSITE_CONFIG, ...parsed };
+  const merged = { ...DEFAULT_WEBSITE_CONFIG, ...parsed };
+  if (!merged.founderPhoto || merged.founderPhoto === '/co-founder.png') {
+    merged.founderPhoto = '/founder.png';
+  }
+  return merged;
 }
 
 export function saveWebsiteConfig(config: WebsiteConfig) {
   if (typeof window === 'undefined') return;
   localStorage.setItem('website_config_db', JSON.stringify(config));
   setDoc(doc(db, 'site_data', 'config'), { value: config }).catch(console.error);
+}
+
+// ─────────────────────────────────────────────────────────
+// COUPONS DATABASE
+// ─────────────────────────────────────────────────────────
+export const DEFAULT_COUPONS: Coupon[] = [
+  {
+    id: 'coupon-1',
+    code: 'WARRIOR10',
+    discountType: 'percentage',
+    discountValue: 10,
+    expiryDate: '2026-12-31',
+    isActive: true
+  },
+  {
+    id: 'coupon-2',
+    code: 'FIRSTIOT50',
+    discountType: 'flat',
+    discountValue: 500,
+    expiryDate: '2026-08-31',
+    isActive: true
+  }
+];
+
+export function getCoupons(): Coupon[] {
+  if (typeof window === 'undefined') return DEFAULT_COUPONS;
+  const coupons = localStorage.getItem('coupons_db');
+  if (!coupons) {
+    localStorage.setItem('coupons_db', JSON.stringify(DEFAULT_COUPONS));
+    return DEFAULT_COUPONS;
+  }
+  return JSON.parse(coupons);
+}
+
+export function saveCoupons(coupons: Coupon[]) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('coupons_db', JSON.stringify(coupons));
+  setDoc(doc(db, 'site_data', 'coupons'), { value: coupons }).catch(console.error);
 }
 
 // Backwards compatibility for homepage config
@@ -893,6 +934,7 @@ export function setupFirestoreSync() {
   syncKey('iot_projects', 'projects', DEFAULT_PROJECTS);
   syncKey('iot_live_classes', 'live_classes', DEFAULT_LIVE_CLASSES);
   syncKey('certificate_signature_config', 'signature', { name: 'Nikhil Kumar', designation: 'CEO & Founder', image: '' });
+  syncKey('coupons_db', 'coupons', DEFAULT_COUPONS);
 }
 
 // Call setup immediately if on client side

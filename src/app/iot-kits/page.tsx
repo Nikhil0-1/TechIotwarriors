@@ -107,7 +107,7 @@ export default function IoTKitsPage() {
                   <span className={styles.originalPrice}>{kit.originalPrice}</span>
                   <span className={styles.shipping}>Free Shipping across India</span>
                 </div>
-                <Link href="/payment?kit=ultimate" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <Link href={`/payment?kit=${i === 0 ? 'ultimate' : 'advanced'}`} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                   Order Kit Now <Zap size={14} />
                 </Link>
               </div>

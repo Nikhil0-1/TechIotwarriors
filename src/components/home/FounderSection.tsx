@@ -33,44 +33,20 @@ export function FounderSection() {
           <div className={styles.grid}>
             {/* Visual Column */}
             <div className={styles.visualCol}>
-              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '10px' }}>
-                {/* Founder */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                  <div className={styles.avatarFrame} style={{ width: '130px', height: '130px' }}>
-                    {config?.founderPhoto ? (
-                      <img src={config.founderPhoto} alt="Founder" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                      <span className={styles.avatarText} style={{ fontSize: '3.2rem' }}>NK</span>
-                    )}
-                    <div className={styles.avatarGlow} />
-                  </div>
-                  <strong style={{ color: 'var(--luxury-white)', fontSize: '0.95rem', fontFamily: 'var(--font-display)' }}>{name}</strong>
-                  <span style={{ color: 'var(--matte-gold)', fontSize: '0.75rem', fontWeight: 600 }}>CEO & Founder</span>
-                </div>
-
-                {/* Co-Founder */}
-                {config?.hasCoFounder !== false && (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                    <div className={styles.avatarFrame} style={{ width: '130px', height: '130px' }}>
-                      {config?.coFounderPhoto ? (
-                        <img src={config.coFounderPhoto} alt="Co-Founder" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                      ) : (
-                        <span className={styles.avatarText} style={{ fontSize: '3.2rem' }}>DK</span>
-                      )}
-                      <div className={styles.avatarGlow} />
-                    </div>
-                    <strong style={{ color: 'var(--luxury-white)', fontSize: '0.95rem', fontFamily: 'var(--font-display)' }}>{config?.coFounderName || 'Devendra Kumar'}</strong>
-                    <span style={{ color: 'var(--matte-gold)', fontSize: '0.75rem', fontWeight: 600 }}>Co-Founder & CTO</span>
-                  </div>
+              <div className={styles.avatarFrame}>
+                {config?.founderPhoto ? (
+                  <img src={config.founderPhoto} alt="Founder" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <span className={styles.avatarText}>NK</span>
                 )}
+                <div className={styles.avatarGlow} />
               </div>
-
               <div className={styles.badgeRow}>
                 <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <Shield size={12} /> IoT Architects
+                  <Shield size={12} /> IoT Architect
                 </span>
                 <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <Wrench size={12} /> Hardware Makers
+                  <Wrench size={12} /> Hardware Maker
                 </span>
               </div>
             </div>
@@ -91,17 +67,9 @@ export function FounderSection() {
                 {bio}
               </p>
 
-              <div className={styles.founderMeta} style={{ display: 'flex', flexDirection: 'row', gap: '30px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <strong className={styles.founderName}>{name}</strong>
-                  <span className={styles.founderRole}>{role}</span>
-                </div>
-                {config?.hasCoFounder !== false && (
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <strong className={styles.founderName}>{config?.coFounderName || 'Devendra Kumar'}</strong>
-                    <span className={styles.founderRole}>{config?.coFounderRole || 'Co-Founder & CTO, Tech IoT Warriors'}</span>
-                  </div>
-                )}
+              <div className={styles.founderMeta}>
+                <strong className={styles.founderName}>{name}</strong>
+                <span className={styles.founderRole}>{role}</span>
               </div>
 
               <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>

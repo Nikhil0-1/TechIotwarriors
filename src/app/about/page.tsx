@@ -62,76 +62,39 @@ export default function AboutPage() {
 
           {/* Premium Founder Section */}
           <div className={`glass-card ${styles.card}`} style={{ borderTop: '2px solid var(--matte-gold)', boxShadow: '0 4px 30px rgba(212, 175, 55, 0.05)' }}>
-            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)', marginBottom: '16px' }}>
+            <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--matte-gold)' }}>
               <Shield size={22} />
-              <span>Leadership Profiles</span>
+              <span>CEO &amp; Founder</span>
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-              {/* CEO & Founder */}
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                <div style={{
-                  width: '72px',
-                  height: '72px',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  background: 'linear-gradient(135deg, var(--matte-gold), var(--gold-light))',
-                  color: 'var(--premium-black)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  fontSize: '1.8rem',
-                  boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
-                  flexShrink: 0
-                }}>
-                  {config.founderPhoto ? (
-                    <img src={config.founderPhoto} alt="Founder" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    'NK'
-                  )}
-                </div>
-                <div style={{ flex: 1, minWidth: '240px' }}>
-                  <h3 style={{ fontSize: '1.2rem', color: 'var(--luxury-white)' }}>{config.founderName}</h3>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--matte-gold)', fontWeight: 600 }}>{config.founderRole}</p>
-                  <p style={{ marginTop: '10px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                    {config.founderBio}
-                  </p>
-                </div>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', marginTop: '16px', flexWrap: 'wrap' }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                background: 'linear-gradient(135deg, var(--matte-gold), var(--gold-light))',
+                color: 'var(--premium-black)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: '1.8rem',
+                boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
+                flexShrink: 0
+              }}>
+                {config.founderPhoto ? (
+                  <img src={config.founderPhoto} alt="Founder" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  'NK'
+                )}
               </div>
-
-              {/* Co-Founder */}
-              {config.hasCoFounder !== false && (
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '24px', flexWrap: 'wrap' }}>
-                  <div style={{
-                    width: '72px',
-                    height: '72px',
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    background: 'linear-gradient(135deg, var(--matte-gold), var(--gold-light))',
-                    color: 'var(--premium-black)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '1.8rem',
-                    boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
-                    flexShrink: 0
-                  }}>
-                    {config.coFounderPhoto ? (
-                      <img src={config.coFounderPhoto} alt="Co-Founder" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      'DK'
-                    )}
-                  </div>
-                  <div style={{ flex: 1, minWidth: '240px' }}>
-                    <h3 style={{ fontSize: '1.2rem', color: 'var(--luxury-white)' }}>{config.coFounderName || 'Devendra Kumar'}</h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--matte-gold)', fontWeight: 600 }}>{config.coFounderRole || 'Co-Founder & CTO, Tech IoT Warriors'}</p>
-                    <p style={{ marginTop: '10px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                      {config.coFounderBio || 'Devendra Kumar is an embedded firmware developer and co-founder of Tech IoT Warriors. He designs the project course content, hardware schematics, and IoT cloud dashboard setups.'}
-                    </p>
-                  </div>
-                </div>
-              )}
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <h3 style={{ fontSize: '1.2rem', color: 'var(--luxury-white)' }}>{config.founderName}</h3>
+                <p style={{ fontSize: '0.8rem', color: 'var(--matte-gold)', fontWeight: 600 }}>{config.founderRole}</p>
+                <p style={{ marginTop: '10px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  {config.founderBio}
+                </p>
+              </div>
             </div>
           </div>
         </div>

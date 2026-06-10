@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { getRegisteredUsers, updateUsersDb } from '@/lib/db';
+import { getRegisteredUsers, updateUsersDb, getCourses, getCoupons, Coupon } from '@/lib/db';
 import styles from './PaymentPage.module.css';
 import { Shield, Zap, Clock, ArrowRight } from '@/components/ui/Icons';
 
@@ -17,15 +17,87 @@ function PaymentPageContent() {
   const [screenshot, setScreenshot] = useState<string | null>(null);
   const [status, setStatus] = useState<'NONE' | 'SUBMITTED'>('NONE');
 
+  const [price, setPrice] = useState<number>(0);
+  const [originalPrice, setOriginalPrice] = useState<number>(0);
+  
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [discountAmount, setDiscountAmount] = useState(0);
+
   useEffect(() => {
     const urlEmail = searchParams.get('email') || '';
     const urlCourse = searchParams.get('course') || '';
+    const urlKit = searchParams.get('kit') || '';
     if (urlEmail) setEmail(urlEmail);
+    
     if (urlCourse) {
-      const formatted = urlCourse.replace(/-/g, ' ');
-      setSelectedCourse(formatted.charAt(0).toUpperCase() + formatted.slice(1));
+      const courses = getCourses();
+      const found = courses.find(c => c.id === urlCourse);
+      if (found) {
+        setSelectedCourse(found.title);
+        const pVal = parseInt(found.price.replace(/[^\d]/g, ''), 10) || 0;
+        const opVal = parseInt(found.originalPrice.replace(/[^\d]/g, ''), 10) || 0;
+        setPrice(pVal);
+        setOriginalPrice(opVal);
+      } else {
+        const formatted = urlCourse.replace(/-/g, ' ');
+        setSelectedCourse(formatted.charAt(0).toUpperCase() + formatted.slice(1));
+      }
+    } else if (urlKit) {
+      if (urlKit === 'ultimate') {
+        setSelectedCourse('Warriors Ultimate IoT Starter Kit');
+        setPrice(2499);
+        setOriginalPrice(4999);
+      } else if (urlKit === 'advanced') {
+        setSelectedCourse('ESP32 Cam Smart Vision Advanced Kit');
+        setPrice(3299);
+        setOriginalPrice(6499);
+      }
     }
   }, [searchParams]);
+
+  const handleApplyCoupon = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCouponError('');
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+
+    const coupons = getCoupons();
+    const coupon = coupons.find(c => c.code.toUpperCase() === couponCode.trim().toUpperCase());
+
+    if (!coupon) {
+      setCouponError('Invalid coupon code.');
+      return;
+    }
+
+    if (!coupon.isActive) {
+      setCouponError('This coupon is no longer active.');
+      return;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (new Date(coupon.expiryDate) < new Date(todayStr)) {
+      setCouponError('This coupon has expired.');
+      return;
+    }
+
+    // Apply discount
+    setAppliedCoupon(coupon);
+    let disc = 0;
+    if (coupon.discountType === 'percentage') {
+      disc = Math.round((price * coupon.discountValue) / 100);
+    } else {
+      disc = coupon.discountValue;
+    }
+    setDiscountAmount(disc);
+  };
 
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -76,6 +148,8 @@ function PaymentPageContent() {
       name,
       phone,
       selectedCourse,
+      price: Math.max(0, price - discountAmount),
+      appliedCoupon: appliedCoupon ? appliedCoupon.code : null,
       screenshot,
       timestamp: new Date().toLocaleDateString()
     };
@@ -181,6 +255,54 @@ function PaymentPageContent() {
                       style={{ background: 'rgba(255,255,255,0.02)', color: 'var(--text-muted)' }}
                     />
                   </div>
+
+                  {price > 0 && (
+                    <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(212, 175, 55, 0.15)', padding: '16px', borderRadius: '8px', marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                        <span>Regular Price:</span>
+                        <span style={{ textDecoration: 'line-through' }}>₹{originalPrice}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                        <span>Course Price:</span>
+                        <span>₹{price}</span>
+                      </div>
+                      
+                      {appliedCoupon && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', color: '#22c55e', marginTop: '4px' }}>
+                          <span>Coupon Discount ({appliedCoupon.code}):</span>
+                          <span>- ₹{discountAmount}</span>
+                        </div>
+                      )}
+
+                      <div className="gold-divider" style={{ margin: '10px 0' }} />
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--matte-gold)' }}>
+                        <span>Payable Amount:</span>
+                        <span>₹{Math.max(0, price - discountAmount)}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {price > 0 && (
+                    <div className="form-group">
+                      <label className="form-label">Have a Discount Coupon?</label>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <input
+                          type="text"
+                          placeholder="Enter coupon code (e.g. WARRIOR10)"
+                          value={couponCode}
+                          onChange={e => setCouponCode(e.target.value)}
+                          className="form-input"
+                          style={{ textTransform: 'uppercase' }}
+                        />
+                        <button type="button" onClick={handleApplyCoupon} className="btn btn-secondary btn-sm" style={{ whiteSpace: 'nowrap' }}>
+                          Apply
+                        </button>
+                      </div>
+                      {couponError && <p style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '4px' }}>{couponError}</p>}
+                      {appliedCoupon && <p style={{ color: '#22c55e', fontSize: '0.8rem', marginTop: '4px' }}>✓ Coupon applied! Discount of {appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.discountValue}%` : `₹${appliedCoupon.discountValue}`} active.</p>}
+                    </div>
+                  )}
 
                   <div className="form-group">
                     <label className="form-label">Upload Transaction Screenshot:</label>
