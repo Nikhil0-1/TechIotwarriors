@@ -86,6 +86,12 @@ export interface WebsiteConfig {
   founderName: string;
   founderRole: string;
   founderBio: string;
+  founderPhoto: string;
+  coFounderName: string;
+  coFounderRole: string;
+  coFounderBio: string;
+  coFounderPhoto: string;
+  hasCoFounder: boolean;
 }
 
 // Default course content scaffolding
@@ -299,7 +305,13 @@ export const DEFAULT_WEBSITE_CONFIG: WebsiteConfig = {
   footerCopyright: '© 2026 Tech IoT Warriors. All rights reserved.',
   founderName: 'Nikhil Kumar',
   founderRole: 'CEO & Founder, Tech IoT Warriors',
-  founderBio: 'Nikhil Kumar is an IoT Architect, Embedded Systems Specialist, and the Founder of Tech IoT Warriors. Driven by a mission to transform hardware education, he has helped thousands of students move past theory into building actual hardware prototypes, smart robotics, and enterprise IoT networks.'
+  founderBio: 'Nikhil Kumar is an IoT Architect, Embedded Systems Specialist, and the Founder of Tech IoT Warriors. Driven by a mission to transform hardware education, he has helped thousands of students move past theory into building actual hardware prototypes, smart robotics, and enterprise IoT networks.',
+  founderPhoto: '',
+  coFounderName: 'Devendra Kumar',
+  coFounderRole: 'Co-Founder & CTO, Tech IoT Warriors',
+  coFounderBio: 'Devendra Kumar is an embedded firmware developer and co-founder of Tech IoT Warriors. He designs the project course content, hardware schematics, and IoT cloud dashboard setups.',
+  coFounderPhoto: '/co-founder.png',
+  hasCoFounder: true
 };
 
 // Course getters / setters
@@ -344,7 +356,8 @@ export function getWebsiteConfig(): WebsiteConfig {
     localStorage.setItem('website_config_db', JSON.stringify(DEFAULT_WEBSITE_CONFIG));
     return DEFAULT_WEBSITE_CONFIG;
   }
-  return JSON.parse(config);
+  const parsed = JSON.parse(config);
+  return { ...DEFAULT_WEBSITE_CONFIG, ...parsed };
 }
 
 export function saveWebsiteConfig(config: WebsiteConfig) {

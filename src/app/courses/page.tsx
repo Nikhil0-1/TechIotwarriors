@@ -17,6 +17,10 @@ const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
   }
 };
 
+const isImageUrl = (url: string) => {
+  return url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('data:image'));
+};
+
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeDiff, setActiveDiff] = useState('All');
@@ -92,9 +96,13 @@ export default function CoursesPage() {
             {filtered.map(course => (
               <div key={course.id} className={`glass-card ${styles.card}`}>
                 <div className={styles.thumbArea}>
-                  <span className={styles.thumbIcon}>
-                    <CourseIcon type={course.thumbnail} />
-                  </span>
+                  {isImageUrl(course.thumbnail) ? (
+                    <img src={course.thumbnail} alt={course.title} className={styles.thumbImage} />
+                  ) : (
+                    <span className={styles.thumbIcon}>
+                      <CourseIcon type={course.thumbnail} />
+                    </span>
+                  )}
                   <span className={`${styles.badge} badge ${course.difficulty === 'Beginner' ? 'badge-green' : course.difficulty === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                     {course.difficulty}
                   </span>

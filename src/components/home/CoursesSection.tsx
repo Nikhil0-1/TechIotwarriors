@@ -116,6 +116,10 @@ const CourseIcon = ({ type, size = 42 }: { type: string; size?: number }) => {
   }
 };
 
+const isImageUrl = (url: string) => {
+  return url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('data:image'));
+};
+
 export function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);
 
@@ -149,9 +153,13 @@ export function CoursesSection() {
             <div key={course.id} className={`glass-card ${styles.card} reveal reveal-delay-${(idx % 3) + 1}`}>
               {/* Card Thumbnail Area */}
               <div className={styles.thumbArea}>
-                <span className={styles.thumbIcon}>
-                  <CourseIcon type={course.thumbnail} />
-                </span>
+                {isImageUrl(course.thumbnail) ? (
+                  <img src={course.thumbnail} alt={course.title} className={styles.thumbImage} />
+                ) : (
+                  <span className={styles.thumbIcon}>
+                    <CourseIcon type={course.thumbnail} />
+                  </span>
+                )}
                 <span className={`${styles.badge} badge ${course.difficulty === 'Beginner' ? 'badge-green' : course.difficulty === 'Intermediate' ? 'badge-blue' : 'badge-red'}`}>
                   {course.difficulty}
                 </span>

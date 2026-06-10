@@ -51,6 +51,7 @@ export default function AdminDashboard() {
   const [coursesList, setCoursesList] = useState<Course[]>([]);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
+  const [newCourseThumbnail, setNewCourseThumbnail] = useState('zap');
 
   // Libraries database
   const [codeSnippetsList, setCodeSnippetsList] = useState<CodeSnippet[]>([]);
@@ -264,7 +265,7 @@ export default function AdminDashboard() {
       rating: 5.0,
       price: '₹' + data.get('price'),
       originalPrice: '₹' + data.get('originalPrice'),
-      thumbnail: data.get('thumbnail') as string,
+      thumbnail: newCourseThumbnail,
       tags: (data.get('tags') as string).split(',').map(t => t.trim()),
       isPremium: data.get('isPremium') === 'true',
       certificateEnabled: data.get('certificateEnabled') === 'true',
@@ -279,6 +280,7 @@ export default function AdminDashboard() {
     const updated = [...coursesList, newCourse];
     saveCourseState(updated);
     setIsCreatingCourse(false);
+    setNewCourseThumbnail('zap');
     showNotification(`New course "${newCourse.title}" successfully added.`);
   };
 
@@ -1405,16 +1407,56 @@ export default function AdminDashboard() {
                       <label className="form-label">Original Price INR (e.g. 3999):</label>
                       <input type="number" name="originalPrice" required className="form-input" placeholder="3999" />
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Thumbnail Icon Class:</label>
-                      <select name="thumbnail" className="form-input" style={{background: 'var(--dark-gray)'}}>
-                        <option value="zap">Zap (Electronics)</option>
-                        <option value="cpu">Cpu (Arduino/Hardware)</option>
-                        <option value="wifi">Wifi (ESP8266/Smart)</option>
-                        <option value="rocket">Rocket (ESP32/RTOS)</option>
-                        <option value="globe">Globe (IoT Cloud)</option>
-                        <option value="wrench">Wrench (Projects)</option>
-                      </select>
+                    <div className="form-group" style={{gridColumn: 'span 2'}}>
+                      <label className="form-label">Course Thumbnail (Icon code, Image URL, or Upload below):</label>
+                      <input 
+                        type="text" 
+                        name="thumbnail" 
+                        value={newCourseThumbnail} 
+                        onChange={(e) => setNewCourseThumbnail(e.target.value)} 
+                        required 
+                        className="form-input" 
+                        placeholder="zap, wifi, cpu OR https://example.com/image.jpg" 
+                      />
+                      <div style={{ marginTop: '8px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <select 
+                          className="form-input" 
+                          style={{ background: 'var(--dark-gray)', width: 'auto', flexGrow: 1 }}
+                          onChange={(e) => {
+                            if (e.target.value) setNewCourseThumbnail(e.target.value);
+                          }}
+                          value={['zap', 'cpu', 'wifi', 'rocket', 'globe', 'wrench'].includes(newCourseThumbnail) ? newCourseThumbnail : ""}
+                        >
+                          <option value="" disabled>-- Or Select Default Icon --</option>
+                          <option value="zap">Zap (Electronics)</option>
+                          <option value="cpu">Cpu (Arduino/Hardware)</option>
+                          <option value="wifi">Wifi (ESP8266/Smart)</option>
+                          <option value="rocket">Rocket (ESP32/RTOS)</option>
+                          <option value="globe">Globe (IoT Cloud)</option>
+                          <option value="wrench">Wrench (Projects)</option>
+                        </select>
+                        
+                        <label className="btn btn-outline-gold btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap' }}>
+                          Upload Image File
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            style={{ display: 'none' }} 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  if (event.target?.result) {
+                                    setNewCourseThumbnail(event.target.result as string);
+                                  }
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="form-group">
                       <label className="form-label">Tags (comma-separated, e.g. Arduino, WiFi):</label>
@@ -1475,16 +1517,55 @@ export default function AdminDashboard() {
                         <option value="Advanced">Advanced</option>
                       </select>
                     </div>
-                    <div className="form-group">
-                      <label className="form-label">Thumbnail:</label>
-                      <select value={editingCourse.thumbnail} onChange={e => setEditingCourse({...editingCourse, thumbnail: e.target.value})} className="form-input" style={{background: 'var(--dark-gray)'}}>
-                        <option value="zap">Zap</option>
-                        <option value="cpu">Cpu</option>
-                        <option value="wifi">Wifi</option>
-                        <option value="rocket">Rocket</option>
-                        <option value="globe">Globe</option>
-                        <option value="wrench">Wrench</option>
-                      </select>
+                    <div className="form-group" style={{gridColumn: 'span 2'}}>
+                      <label className="form-label">Course Thumbnail (Icon code, Image URL, or Upload below):</label>
+                      <input 
+                        type="text" 
+                        value={editingCourse.thumbnail} 
+                        onChange={e => setEditingCourse({...editingCourse, thumbnail: e.target.value})} 
+                        required 
+                        className="form-input" 
+                        placeholder="zap, wifi, cpu OR https://example.com/image.jpg" 
+                      />
+                      <div style={{ marginTop: '8px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <select 
+                          className="form-input" 
+                          style={{ background: 'var(--dark-gray)', width: 'auto', flexGrow: 1 }}
+                          onChange={(e) => {
+                            if (e.target.value) setEditingCourse({...editingCourse, thumbnail: e.target.value});
+                          }}
+                          value={['zap', 'cpu', 'wifi', 'rocket', 'globe', 'wrench'].includes(editingCourse.thumbnail) ? editingCourse.thumbnail : ""}
+                        >
+                          <option value="" disabled>-- Or Select Default Icon --</option>
+                          <option value="zap">Zap (Electronics)</option>
+                          <option value="cpu">Cpu (Arduino/Hardware)</option>
+                          <option value="wifi">Wifi (ESP8266/Smart)</option>
+                          <option value="rocket">Rocket (ESP32/RTOS)</option>
+                          <option value="globe">Globe (IoT Cloud)</option>
+                          <option value="wrench">Wrench (Projects)</option>
+                        </select>
+                        
+                        <label className="btn btn-outline-gold btn-sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap' }}>
+                          Upload Image File
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            style={{ display: 'none' }} 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  if (event.target?.result) {
+                                    setEditingCourse({...editingCourse, thumbnail: event.target.result as string});
+                                  }
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div className="form-group">
                       <label className="form-label">Is Premium Content:</label>
@@ -1712,10 +1793,7 @@ export default function AdminDashboard() {
                       <label className="form-label">Active Projects Value:</label>
                       <input type="text" value={webConfig.statsProjects} onChange={e => setWebConfig({...webConfig, statsProjects: e.target.value})} className="form-input" required />
                     </div>
-                  </div>
-                </div>
-
-                {/* Section C: Founder branding */}
+                              {/* Section C: Founder branding */}
                 <div className={`glass-card ${styles.editorGroupCard}`}>
                   <h3>3. Founder Branding (Nikhil Kumar)</h3>
                   <div className="grid-2">
@@ -1732,6 +1810,89 @@ export default function AdminDashboard() {
                     <label className="form-label">Founder Profile Bio:</label>
                     <textarea value={webConfig.founderBio} onChange={e => setWebConfig({...webConfig, founderBio: e.target.value})} className="form-input" rows={4} required />
                   </div>
+                  <div className="form-group">
+                    <label className="form-label">Founder Photo (URL or Upload below):</label>
+                    <input type="text" value={webConfig.founderPhoto || ''} onChange={e => setWebConfig({...webConfig, founderPhoto: e.target.value})} className="form-input" placeholder="e.g. /nk-profile.jpg" />
+                    <div style={{ marginTop: '8px' }}>
+                      <label className="btn btn-outline-gold btn-sm" style={{ cursor: 'pointer', display: 'inline-block' }}>
+                        Upload Founder Photo File
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          style={{ display: 'none' }} 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                if (event.target?.result) {
+                                  setWebConfig({...webConfig, founderPhoto: event.target.result as string});
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section C2: Co-Founder branding */}
+                <div className={`glass-card ${styles.editorGroupCard}`}>
+                  <h3>3b. Co-Founder Branding (Devendra Kumar)</h3>
+                  <div className="form-group">
+                    <label className="form-label">Co-Founder Profile Status:</label>
+                    <select value={String(webConfig.hasCoFounder)} onChange={e => setWebConfig({...webConfig, hasCoFounder: e.target.value === 'true'})} className="form-input" style={{background: 'var(--dark-gray)'}}>
+                      <option value="true">Show Co-Founder Profile on Website</option>
+                      <option value="false">Hide Co-Founder Profile</option>
+                    </select>
+                  </div>
+                  {webConfig.hasCoFounder && (
+                    <>
+                      <div className="grid-2">
+                        <div className="form-group">
+                          <label className="form-label">Co-Founder Full Name:</label>
+                          <input type="text" value={webConfig.coFounderName || ''} onChange={e => setWebConfig({...webConfig, coFounderName: e.target.value})} className="form-input" required />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Co-Founder Role Title:</label>
+                          <input type="text" value={webConfig.coFounderRole || ''} onChange={e => setWebConfig({...webConfig, coFounderRole: e.target.value})} className="form-input" required />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Co-Founder Profile Bio:</label>
+                        <textarea value={webConfig.coFounderBio || ''} onChange={e => setWebConfig({...webConfig, coFounderBio: e.target.value})} className="form-input" rows={4} required />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Co-Founder Photo (URL or Upload below):</label>
+                        <input type="text" value={webConfig.coFounderPhoto || ''} onChange={e => setWebConfig({...webConfig, coFounderPhoto: e.target.value})} className="form-input" placeholder="e.g. /co-founder.png" />
+                        <div style={{ marginTop: '8px' }}>
+                          <label className="btn btn-outline-gold btn-sm" style={{ cursor: 'pointer', display: 'inline-block' }}>
+                            Upload Co-Founder Photo File
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              style={{ display: 'none' }} 
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    if (event.target?.result) {
+                                      setWebConfig({...webConfig, coFounderPhoto: event.target.result as string});
+                                    }
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>      </div>
                 </div>
 
                 {/* Section D: About details */}
